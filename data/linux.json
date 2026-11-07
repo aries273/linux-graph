@@ -1,0 +1,3422 @@
+{
+  "meta": {
+    "title": "Linux 就该这么学 · 知识图谱",
+    "source": "《Linux就该这么学》刘遄著",
+    "chapters": [
+      {
+        "no": 1,
+        "title": "部署虚拟环境安装Linux系统"
+      },
+      {
+        "no": 2,
+        "title": "新手必须掌握的Linux命令"
+      },
+      {
+        "no": 3,
+        "title": "管道符、重定向与环境变量"
+      },
+      {
+        "no": 4,
+        "title": "Vim编辑器与Shell命令脚本"
+      },
+      {
+        "no": 5,
+        "title": "用户身份与文件权限"
+      },
+      {
+        "no": 6,
+        "title": "存储结构与磁盘划分"
+      },
+      {
+        "no": 7,
+        "title": "使用RAID与LVM磁盘阵列技术"
+      },
+      {
+        "no": 8,
+        "title": "Iptables与Firewalld防火墙"
+      },
+      {
+        "no": 9,
+        "title": "使用ssh服务管理远程主机"
+      },
+      {
+        "no": 10,
+        "title": "使用Apache服务部署静态网站"
+      },
+      {
+        "no": 11,
+        "title": "使用Vsftpd服务传输文件"
+      },
+      {
+        "no": 12,
+        "title": "使用Samba或NFS实现文件共享"
+      },
+      {
+        "no": 13,
+        "title": "使用Bind提供域名解析服务"
+      },
+      {
+        "no": 14,
+        "title": "使用DHCP动态管理主机地址"
+      },
+      {
+        "no": 15,
+        "title": "使用Postfix与Dovecot部署邮件系统"
+      },
+      {
+        "no": 16,
+        "title": "使用Squid部署代理缓存服务"
+      },
+      {
+        "no": 17,
+        "title": "使用iSCSI服务部署网络存储"
+      },
+      {
+        "no": 18,
+        "title": "使用MariaDB数据库管理系统"
+      },
+      {
+        "no": 19,
+        "title": "使用PXE+Kickstart无人值守安装服务"
+      },
+      {
+        "no": 20,
+        "title": "使用LNMP架构部署动态网站环境"
+      }
+    ]
+  },
+  "topics": [
+    {
+      "id": "lx-01-01",
+      "name": "虚拟机与 Linux 安装",
+      "chapter": 1,
+      "section": "1.4",
+      "domain": "系统与安装",
+      "description": "用 VMware 等虚拟化软件创建虚拟机并安装 RHEL 7，可在单机上隔离出多套可随时重装的实验环境；安装时需规划 /、/boot 与 swap 分区。",
+      "mastery_criteria": [
+        "能用虚拟化软件创建虚拟机并配置内存与磁盘",
+        "能完成 RHEL 7 安装并设置 root 口令与网络",
+        "能区分 /、/boot、swap 三个分区的作用"
+      ],
+      "commands": [],
+      "question": {
+        "prompt": "在 RHEL 7 安装过程中，用于存放内核与引导文件的分区通常是？",
+        "choices": [
+          "A. /",
+          "B. /home",
+          "C. /boot",
+          "D. swap"
+        ],
+        "answer": "C",
+        "explanation": "内核与 initramfs 等引导文件放在 /boot 分区；/ 是根分区存放系统主体，/home 存用户数据，swap 是交换空间并不存引导文件。"
+      },
+      "prerequisites": []
+    },
+    {
+      "id": "lx-01-02",
+      "name": "Linux 内核与系统运行机制",
+      "chapter": 1,
+      "section": "1.2",
+      "domain": "系统与安装",
+      "description": "Linux 由内核与外围软件组成，内核负责进程调度、内存管理与设备驱动，用户通过 Shell 或桌面环境间接使用内核提供的系统调用。",
+      "mastery_criteria": [
+        "能说明内核与 Shell 的分工",
+        "能区分内核空间与用户空间",
+        "能查看当前内核版本与启动日志"
+      ],
+      "commands": [
+        "uname -r",
+        "dmesg"
+      ],
+      "question": {
+        "prompt": "Shell 在 Linux 系统中的主要作用是？",
+        "choices": [
+          "A. 直接管理硬件驱动",
+          "B. 作为用户与内核之间的命令解释器",
+          "C. 编译内核模块",
+          "D. 替代文件系统管理磁盘"
+        ],
+        "answer": "B",
+        "explanation": "Shell 接收用户输入的命令并交由内核执行，本身不管理硬件也不编译内核，驱动与内存调度由内核负责。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-01-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-01-03",
+      "name": "开源许可与发行版体系",
+      "chapter": 1,
+      "section": "1.1",
+      "domain": "系统与安装",
+      "description": "GPL 协议以 copyleft 方式保证开源软件可自由使用与再分发，衍生作品须同样开源；Red Hat 系与 Debian 系在包管理和目录组织上存在差异。",
+      "mastery_criteria": [
+        "能说明 GPL 与自由软件的含义",
+        "能区分 RHEL、CentOS、Ubuntu 的包管理方式",
+        "能判断常见软件是否属于开源许可"
+      ],
+      "commands": [],
+      "question": {
+        "prompt": "关于 GPL 开源许可协议，下列说法正确的是？",
+        "choices": [
+          "A. 修改后的代码可以闭源分发",
+          "B. 分发修改后的代码必须同样以 GPL 开源",
+          "C. 使用者可申请专利禁止他人使用",
+          "D. 仅限个人学习不得商用"
+        ],
+        "answer": "B",
+        "explanation": "GPL 具有传染性，分发基于 GPL 代码的衍生作品必须继续开源；它不禁止商用，也不允许用专利限制他人自由使用。"
+      },
+      "prerequisites": []
+    },
+    {
+      "id": "lx-01-04",
+      "name": "Linux 目录结构与 FHS 标准",
+      "chapter": 1,
+      "section": "1.4",
+      "domain": "系统与安装",
+      "description": "Linux 按 FHS 标准组织目录：/etc 放配置文件、/var 放日志等可变数据、/usr 放程序与库、/home 放用户家目录，理解层次可快速定位文件。",
+      "mastery_criteria": [
+        "能说出 /etc、/var、/usr、/home 的用途",
+        "能根据需求判断配置文件应放在哪个目录",
+        "能用 ls 查看目录内容与权限"
+      ],
+      "commands": [
+        "ls -l /etc",
+        "ls /var/log",
+        "tree /usr"
+      ],
+      "question": {
+        "prompt": "/var 目录主要存放哪类内容？",
+        "choices": [
+          "A. 系统配置文件",
+          "B. 日志与经常变化的数据",
+          "C. 内核与引导文件",
+          "D. 用户家目录"
+        ],
+        "answer": "B",
+        "explanation": "/var 存放日志、缓存、邮件队列等可变数据；配置文件在 /etc，引导文件在 /boot，用户家目录在 /home。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-01-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-01-05",
+      "name": "systemd 与 systemctl 服务管理",
+      "chapter": 1,
+      "section": "1.5",
+      "domain": "服务与运维",
+      "description": "systemd 统一管理系统服务，systemctl 的 start、stop、restart、enable 分别控制运行状态与开机自启，单元文件位于 /usr/lib/systemd/system。",
+      "mastery_criteria": [
+        "能用 systemctl 启停与查看服务状态",
+        "能区分 start 与 enable 的差别",
+        "能定位并阅读服务单元文件"
+      ],
+      "commands": [
+        "systemctl status sshd",
+        "systemctl start httpd",
+        "systemctl enable httpd",
+        "systemctl disable firewalld"
+      ],
+      "question": {
+        "prompt": "执行 systemctl enable httpd 的实际作用是？",
+        "choices": [
+          "A. 立即启动 httpd 服务",
+          "B. 设置 httpd 开机自动启动",
+          "C. 停止并禁用 httpd",
+          "D. 仅查看 httpd 的运行状态"
+        ],
+        "answer": "B",
+        "explanation": "enable 只是在多用户目标目录下建立启动软链接，使服务开机自启；立即启动需用 systemctl start，查看状态用 status。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-01-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-02-01",
+      "name": "命令格式与帮助获取",
+      "chapter": 2,
+      "section": "2.1",
+      "domain": "命令与Shell",
+      "description": "Linux 命令由命令名、短选项、长选项与参数构成，短选项可合并书写；man 手册分章节，--help 输出简要用法，是自学命令的主要途径。",
+      "mastery_criteria": [
+        "能按命令名 选项 参数的结构正确书写命令",
+        "能用 man 与 --help 查询用法",
+        "能看懂 man 手册中各章节编号的含义"
+      ],
+      "commands": [
+        "man ls",
+        "ls --help",
+        "man 5 passwd"
+      ],
+      "question": {
+        "prompt": "命令 man 5 passwd 中的数字 5 表示什么？",
+        "choices": [
+          "A. 手册的第 5 页",
+          "B. 手册第 5 章节，即文件格式说明",
+          "C. 连续显示 5 次",
+          "D. 查看系统中第 5 个用户"
+        ],
+        "answer": "B",
+        "explanation": "man 的数字是手册章节号，1 为用户命令、5 为文件格式与配置文件、8 为系统管理命令，因此这里查看的是 /etc/passwd 的格式说明。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-01-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-02-02",
+      "name": "文件与目录操作命令",
+      "chapter": 2,
+      "section": "2.2",
+      "domain": "命令与Shell",
+      "description": "ls、cd、mkdir、touch、cp、mv、rm 是使用频率最高的文件管理命令，-p 创建多级目录、-r 递归复制、-f 强制删除，误用 rm -rf 风险极高。",
+      "mastery_criteria": [
+        "能用 mkdir -p 创建多级目录",
+        "能区分 cp 与 mv 的行为差异",
+        "能在删除前确认路径避免误删"
+      ],
+      "commands": [
+        "ls -lh /etc",
+        "mkdir -p /data/app/logs",
+        "cp -r /etc/skel /home/",
+        "mv a.txt b.txt",
+        "rm -rf /tmp/test"
+      ],
+      "question": {
+        "prompt": "要在 /data 下一次性创建多级目录 /data/app/logs，正确的命令是？",
+        "choices": [
+          "A. mkdir /data/app/logs",
+          "B. mkdir -p /data/app/logs",
+          "C. touch -p /data/app/logs",
+          "D. cp -p /data/app/logs"
+        ],
+        "answer": "B",
+        "explanation": "mkdir 默认要求上级目录已存在，-p 会自动逐级创建缺失目录；touch 只能建空文件，cp -p 是保留属性复制。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-02-03",
+      "name": "文本查看与内容检索",
+      "chapter": 2,
+      "section": "2.3",
+      "domain": "命令与Shell",
+      "description": "cat 适合短文件，less 可翻页查看长文件，head 与 tail 取首尾若干行，grep 按内容过滤，find 按名称、大小与时间检索文件。",
+      "mastery_criteria": [
+        "能用 tail -f 实时跟踪日志",
+        "能用 grep 定位配置文件中的关键字",
+        "能组合 find 的条件筛选目标文件"
+      ],
+      "commands": [
+        "cat /etc/hosts",
+        "less /var/log/messages",
+        "tail -f /var/log/messages",
+        "grep -n root /etc/passwd",
+        "find /etc -name '*.conf'"
+      ],
+      "question": {
+        "prompt": "需要持续观察日志文件不断新增的内容，应使用？",
+        "choices": [
+          "A. cat",
+          "B. less",
+          "C. tail -f",
+          "D. head -n 20"
+        ],
+        "answer": "C",
+        "explanation": "tail -f 会保持文件打开并输出后续新增行，适合实时排错；cat 一次性输出全文，less 需手动翻页，head 只看开头。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-02-04",
+      "name": "压缩打包与归档",
+      "chapter": 2,
+      "section": "2.5",
+      "domain": "命令与Shell",
+      "description": "tar 负责打包与解包，gzip、bzip2、xz 负责压缩算法，tar 加 czf 或 xzf 可一步完成打包压缩与解压，备份与传输前常用。",
+      "mastery_criteria": [
+        "能用 tar czf 打包目录",
+        "能用 tar xzf 解压归档文件",
+        "能区分打包与压缩的作用"
+      ],
+      "commands": [
+        "tar czf /tmp/etc.tar.gz /etc",
+        "tar xzf etc.tar.gz",
+        "tar tzf etc.tar.gz",
+        "gzip -d file.gz"
+      ],
+      "question": {
+        "prompt": "解压 etc.tar.gz 归档文件应使用？",
+        "choices": [
+          "A. tar czf etc.tar.gz",
+          "B. tar xzf etc.tar.gz",
+          "C. gzip etc.tar.gz",
+          "D. unzip etc.tar.gz"
+        ],
+        "answer": "B",
+        "explanation": "tar 的 x 表示解包、z 表示调用 gzip、f 指定文件名；czf 是打包压缩方向，gzip 只能压缩单文件，unzip 处理 zip 格式。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-02-05",
+      "name": "系统状态与进程管理命令",
+      "chapter": 2,
+      "section": "2.6",
+      "domain": "命令与Shell",
+      "description": "ps 与 top 观察进程与资源占用，free 看内存，df 看磁盘，uptime 显示运行时长与平均负载，kill 按 PID 发送信号结束进程。",
+      "mastery_criteria": [
+        "能用 ps aux 与 grep 定位进程",
+        "能读懂 top 中的负载与 CPU 占用",
+        "能用 kill -9 强制结束进程"
+      ],
+      "commands": [
+        "ps aux | grep httpd",
+        "top",
+        "free -h",
+        "df -h",
+        "kill -9 1234"
+      ],
+      "question": {
+        "prompt": "要强制结束 PID 为 1234 且不响应普通终止信号的进程，应使用？",
+        "choices": [
+          "A. kill 1234",
+          "B. kill -9 1234",
+          "C. ps -9 1234",
+          "D. top 1234"
+        ],
+        "answer": "B",
+        "explanation": "kill 默认发送 SIGTERM 可被进程忽略，-9 发送 SIGKILL 强制终止；ps 与 top 只能查看进程，不能结束进程。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-01",
+          "type": "soft"
+        },
+        {
+          "id": "lx-01-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-03-01",
+      "name": "输入输出重定向",
+      "chapter": 3,
+      "section": "3.1",
+      "domain": "命令与Shell",
+      "description": "标准输出用 > 覆盖写入、>> 追加写入，2> 单独保存错误输出，< 与 << 提供输入来源，可把命令结果持久化到文件便于复查。",
+      "mastery_criteria": [
+        "能区分覆盖与追加的输出重定向",
+        "能分别重定向标准输出与错误输出",
+        "能用 heredoc 一次写入多行文本"
+      ],
+      "commands": [
+        "echo hello > /tmp/a.txt",
+        "ls /etc > /tmp/list 2>&1",
+        "cat > /tmp/notes << EOF"
+      ],
+      "question": {
+        "prompt": "把命令输出追加到已有文件而不覆盖原内容，应使用？",
+        "choices": [
+          "A. >",
+          "B. >>",
+          "C. <",
+          "D. 2>"
+        ],
+        "answer": "B",
+        "explanation": "> 会清空文件后写入，>> 在文件末尾追加；< 是输入重定向，2> 只重定向错误输出，均不满足追加要求。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-03-02",
+      "name": "管道符与命令组合",
+      "chapter": 3,
+      "section": "3.2",
+      "domain": "命令与Shell",
+      "description": "管道符把前一条命令的标准输出作为后一条命令的标准输入，常与 grep、wc、sort、uniq 组合完成过滤、统计与去重。",
+      "mastery_criteria": [
+        "能用管道串联两条以上命令",
+        "能用 wc 统计行数与字数",
+        "能用 grep 与管道组合过滤输出"
+      ],
+      "commands": [
+        "ps aux | grep sshd",
+        "cat /etc/passwd | wc -l",
+        "ls /etc | sort -r"
+      ],
+      "question": {
+        "prompt": "统计 /etc/passwd 文件的行数，正确的命令是？",
+        "choices": [
+          "A. cat /etc/passwd | wc -l",
+          "B. wc /etc/passwd",
+          "C. grep -c /etc/passwd",
+          "D. ps aux | wc"
+        ],
+        "answer": "A",
+        "explanation": "管道把文件内容交给 wc，-l 统计行数；单独 wc 也需要 -l 才有行数，grep -c 需要模式参数，ps 与该文件无关。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-03-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-03-03",
+      "name": "通配符与引用转义",
+      "chapter": 3,
+      "section": "3.3",
+      "domain": "命令与Shell",
+      "description": "通配符星号、问号与方括号由 Shell 展开匹配文件名；反斜杠转义特殊字符，单引号内变量不展开，双引号内变量会被替换。",
+      "mastery_criteria": [
+        "能用通配符批量匹配文件",
+        "能用反斜杠转义特殊字符",
+        "能区分单引号与双引号的展开行为"
+      ],
+      "commands": [
+        "ls /etc/*.conf",
+        "echo \"$HOME\"",
+        "echo '$HOME'"
+      ],
+      "question": {
+        "prompt": "命令 echo '$HOME' 与 echo \"$HOME\" 的区别是？",
+        "choices": [
+          "A. 输出完全相同",
+          "B. 单引号不解析变量只原样输出，双引号会解析变量",
+          "C. 双引号不解析变量",
+          "D. 单引号只能输出数字"
+        ],
+        "answer": "B",
+        "explanation": "单引号内所有字符按字面处理，变量保持原样；双引号内会进行变量替换与部分转义处理，因此输出家目录路径。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-03-04",
+      "name": "环境变量与 PATH",
+      "chapter": 3,
+      "section": "3.4",
+      "domain": "命令与Shell",
+      "description": "环境变量以键值对形式影响程序运行，PATH 决定命令搜索顺序，export 使变量传递给子进程，env 与 printenv 可查看当前变量。",
+      "mastery_criteria": [
+        "能查看并临时修改 PATH",
+        "能用 export 让变量对子进程生效",
+        "能解释命令找不到时的排查思路"
+      ],
+      "commands": [
+        "echo $PATH",
+        "export PATH=$PATH:/usr/local/bin",
+        "printenv | grep LANG"
+      ],
+      "question": {
+        "prompt": "使变量对当前 Shell 及其子进程生效，应使用？",
+        "choices": [
+          "A. set 变量",
+          "B. export 变量",
+          "C. alias 变量",
+          "D. unset 变量"
+        ],
+        "answer": "B",
+        "explanation": "export 把变量标记为导出，子进程才能继承；set 只影响当前 Shell 且行为随参数变化，alias 定义别名，unset 删除变量。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-03-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-03-05",
+      "name": "环境变量配置文件",
+      "chapter": 3,
+      "section": "3.5",
+      "domain": "命令与Shell",
+      "description": "/etc/profile 与 /etc/profile.d 对所有用户生效，~/.bash_profile 与 ~/.bashrc 只对当前用户生效，修改后需 source 或重新登录才加载。",
+      "mastery_criteria": [
+        "能定位全局与用户级的环境变量文件",
+        "能用 source 立即加载配置",
+        "能判断变量应写入哪一级配置文件"
+      ],
+      "commands": [
+        "vim /etc/profile",
+        "source /etc/profile",
+        "cat ~/.bashrc"
+      ],
+      "question": {
+        "prompt": "希望环境变量只对当前用户永久生效，通常应写入哪个文件？",
+        "choices": [
+          "A. /etc/profile",
+          "B. ~/.bash_profile",
+          "C. /etc/hosts",
+          "D. /etc/fstab"
+        ],
+        "answer": "B",
+        "explanation": "~/.bash_profile 属于当前用户的家目录配置，登录时加载；/etc/profile 对所有用户生效，/etc/hosts 与 /etc/fstab 分别管解析和挂载。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-03-04",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-04-01",
+      "name": "Vim 的三种模式",
+      "chapter": 4,
+      "section": "4.1",
+      "domain": "命令与Shell",
+      "description": "Vim 分命令、输入与末行三种模式，按 i 进入编辑，Esc 回到命令模式，冒号进入末行模式执行保存、退出与替换等操作。",
+      "mastery_criteria": [
+        "能熟练在三种模式间切换",
+        "能用 :wq 与 :q! 保存退出或放弃修改",
+        "能解释为何直接输入文字没有反应"
+      ],
+      "commands": [
+        "vim /etc/fstab",
+        "vim +10 /etc/passwd"
+      ],
+      "question": {
+        "prompt": "在 Vim 中保存修改并退出，应在末行模式输入？",
+        "choices": [
+          "A. :wq",
+          "B. :q!",
+          "C. i",
+          "D. Esc"
+        ],
+        "answer": "A",
+        "explanation": ":wq 表示写入并退出，:q! 是不保存强制退出，i 进入编辑模式，Esc 只是回到命令模式并不会退出。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-04-02",
+      "name": "Vim 编辑技巧与配置",
+      "chapter": 4,
+      "section": "4.1",
+      "domain": "命令与Shell",
+      "description": "dd 删除整行、yy 复制整行、p 粘贴、u 撤销、斜杠搜索关键字，~/.vimrc 可持久化行号、缩进与编码等个性化设置。",
+      "mastery_criteria": [
+        "能用 dd、yy、p 完成行级编辑",
+        "能用 u 与 Ctrl+r 撤销重做",
+        "能在 ~/.vimrc 中配置行号与缩进"
+      ],
+      "commands": [
+        "vim ~/.vimrc",
+        "set nu"
+      ],
+      "question": {
+        "prompt": "Vim 命令模式下删除光标所在整行的操作是？",
+        "choices": [
+          "A. yy",
+          "B. dd",
+          "C. p",
+          "D. u"
+        ],
+        "answer": "B",
+        "explanation": "dd 删除整行并放入寄存器，yy 复制整行，p 粘贴寄存器内容，u 撤销上一步操作，四者用途不同。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-04-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-04-03",
+      "name": "Shell 脚本基础",
+      "chapter": 4,
+      "section": "4.2",
+      "domain": "命令与Shell",
+      "description": "脚本首行用感叹号加路径指定解释器如 /bin/bash，变量无需声明直接赋值，执行前需 chmod 加可执行权限，也可用 bash 脚本名运行。",
+      "mastery_criteria": [
+        "能编写并执行一个简单脚本",
+        "能为脚本添加可执行权限",
+        "能用 bash -n 检查脚本语法"
+      ],
+      "commands": [
+        "chmod +x test.sh",
+        "./test.sh",
+        "bash -n test.sh",
+        "bash test.sh"
+      ],
+      "question": {
+        "prompt": "Shell 脚本第一行中井号加叹号加路径的作用是？",
+        "choices": [
+          "A. 仅作注释会被忽略",
+          "B. 指定脚本使用的命令解释器",
+          "C. 声明一个全局变量",
+          "D. 自动设置文件权限"
+        ],
+        "answer": "B",
+        "explanation": "shebang 行告诉内核用哪个解释器执行脚本；它位于首行时有特殊含义，不会被当作普通注释，也不负责赋权。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-03-02",
+          "type": "soft"
+        },
+        {
+          "id": "lx-03-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-04-04",
+      "name": "条件测试与流程控制",
+      "chapter": 4,
+      "section": "4.3",
+      "domain": "命令与Shell",
+      "description": "if 按条件选择分支、for 遍历列表、while 在条件成立时循环、case 匹配多分支，条件测试可用 test 或方括号配合 -f、-d 等判断符。",
+      "mastery_criteria": [
+        "能用 if 与 test 编写分支逻辑",
+        "能用 for 与 while 完成循环",
+        "能用 case 处理多分支参数"
+      ],
+      "commands": [
+        "test -f /etc/passwd",
+        "for i in 1 2 3; do echo $i; done",
+        "if [ -d /etc ]; then echo dir; fi"
+      ],
+      "question": {
+        "prompt": "判断 /etc/passwd 是否为普通文件，正确的条件测试是？",
+        "choices": [
+          "A. [ -d /etc/passwd ]",
+          "B. [ -f /etc/passwd ]",
+          "C. [ -x /etc/passwd ]",
+          "D. [ -z /etc/passwd ]"
+        ],
+        "answer": "B",
+        "explanation": "-f 判断是否为普通文件，-d 判断目录，-x 判断可执行权限，-z 判断字符串是否为空，因此只有 -f 符合要求。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-04-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-03-03",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-04-05",
+      "name": "crontab 计划任务",
+      "chapter": 4,
+      "section": "4.4",
+      "domain": "自动化部署",
+      "description": "crontab -e 编辑周期任务，时间格式为分、时、日、月、周加命令，需保证 crond 服务运行，任务才会按计划被触发执行。",
+      "mastery_criteria": [
+        "能编写包含五段时间字段的定时任务",
+        "能区分 crontab -e 与 -l 的用途",
+        "能排查任务未执行的原因"
+      ],
+      "commands": [
+        "crontab -e",
+        "crontab -l",
+        "systemctl status crond"
+      ],
+      "question": {
+        "prompt": "crontab 条目五段字段中第一段写作星号斜杠 5，表示什么？",
+        "choices": [
+          "A. 每天 5 点执行一次",
+          "B. 每 5 分钟执行一次",
+          "C. 每月 5 日执行一次",
+          "D. 每小时第 5 分钟执行一次"
+        ],
+        "answer": "B",
+        "explanation": "第一段为分钟，星号斜杠 5 表示在 0 到 59 分钟内每 5 分钟触发一次，后面四段为任意，因此是每 5 分钟执行。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-04-04",
+          "type": "soft"
+        },
+        {
+          "id": "lx-01-05",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-05-01",
+      "name": "用户与用户组管理",
+      "chapter": 5,
+      "section": "5.1",
+      "domain": "用户与权限",
+      "description": "useradd 与 groupadd 创建账户和组，usermod 修改属性，userdel 删除账户，-G 指定附加组，账户信息记录在 /etc/passwd 与 /etc/group。",
+      "mastery_criteria": [
+        "能用 useradd 创建用户并指定附加组",
+        "能用 id 查看用户的 UID、GID 与所属组",
+        "能安全删除用户及残留家目录"
+      ],
+      "commands": [
+        "useradd -G wheel linuxprobe",
+        "groupadd devops",
+        "usermod -aG devops linuxprobe",
+        "id linuxprobe",
+        "userdel -r linuxprobe"
+      ],
+      "question": {
+        "prompt": "把已有用户 linuxprobe 追加到附加组 devops，正确的命令是？",
+        "choices": [
+          "A. usermod -G devops linuxprobe",
+          "B. usermod -aG devops linuxprobe",
+          "C. useradd -G devops linuxprobe",
+          "D. groupadd -G devops linuxprobe"
+        ],
+        "answer": "B",
+        "explanation": "usermod 的 -G 若不配合 -a 会覆盖原有附加组，-aG 才是追加；useradd 用于新建用户，groupadd 只能创建组。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-03-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-05-02",
+      "name": "口令管理与 shadow 文件",
+      "chapter": 5,
+      "section": "5.2",
+      "domain": "用户与权限",
+      "description": "用户口令以加密形式保存在 /etc/shadow，仅 root 可读；passwd 修改口令，chage 管理口令有效期与过期策略，过期后用户将无法登录。",
+      "mastery_criteria": [
+        "能修改指定用户口令",
+        "能查看并设置口令有效期",
+        "能解释为何口令不存放在 /etc/passwd"
+      ],
+      "commands": [
+        "passwd linuxprobe",
+        "chage -l linuxprobe",
+        "chage -M 90 linuxprobe"
+      ],
+      "question": {
+        "prompt": "用户口令加密后的哈希值保存在哪个文件？",
+        "choices": [
+          "A. /etc/passwd",
+          "B. /etc/shadow",
+          "C. /etc/group",
+          "D. /etc/login.defs"
+        ],
+        "answer": "B",
+        "explanation": "/etc/passwd 只记录用户名、UID、GID 与家目录等公开信息，口令哈希在 /etc/shadow 且默认仅 root 可读，避免被普通用户读取。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-05-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-05-03",
+      "name": "文件权限与 chmod",
+      "chapter": 5,
+      "section": "5.3",
+      "domain": "用户与权限",
+      "description": "文件权限分属主、属组、其他人三段，rwx 对应 4、2、1，chmod 可用数字或符号方式修改，目录的 x 权限决定能否进入。",
+      "mastery_criteria": [
+        "能把 rwx 与数字权限相互换算",
+        "能用符号方式给属组增加写权限",
+        "能解释目录缺少 x 权限时的现象"
+      ],
+      "commands": [
+        "chmod 755 /var/www/html",
+        "chmod u+x test.sh",
+        "chmod g+w /data",
+        "ls -l /etc/passwd"
+      ],
+      "question": {
+        "prompt": "权限 644 表示属主、属组、其他人分别是什么权限？",
+        "choices": [
+          "A. rwx r-- r--",
+          "B. rw- r-- r--",
+          "C. rw- rw- r--",
+          "D. r-- r-- r--"
+        ],
+        "answer": "B",
+        "explanation": "6 等于 4 加 2 即读写，4 为只读，因此 644 是属主读写、属组只读、其他人只读，没有执行权限。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-05-01",
+          "type": "soft"
+        },
+        {
+          "id": "lx-02-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-06-01",
+      "name": "FHS目录结构",
+      "chapter": 6,
+      "section": "6.1",
+      "domain": "存储管理",
+      "description": "Linux以单根/组织文件，FHS约定目录用途：/boot存内核、/etc存配置、/home为家目录、/var存日志与可变数据，掌握后可快速定位配置、日志与设备。",
+      "mastery_criteria": [
+        "能说出/bin、/etc、/home、/var等常见目录的用途",
+        "会使用ls与find在指定目录中定位文件",
+        "能区分绝对路径与相对路径"
+      ],
+      "commands": [
+        "ls /etc/hosts",
+        "find /etc -name '*.conf'"
+      ],
+      "question": {
+        "prompt": "按照FHS约定，系统配置文件与日志文件分别主要存放于哪个目录？",
+        "choices": [
+          "A. /bin与/tmp",
+          "B. /etc与/var/log",
+          "C. /boot与/dev",
+          "D. /home与/usr"
+        ],
+        "answer": "B",
+        "explanation": "FHS规定/etc存放配置文件，/var存放日志等可变数据；/bin是基础命令目录，/boot存内核启动文件，/dev是设备文件，均与题意不符，故选B。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-06-02",
+      "name": "mount与umount挂载",
+      "chapter": 6,
+      "section": "6.2",
+      "domain": "存储管理",
+      "description": "挂载是把设备关联到目录树的操作，设备须挂载到挂载点后才能读写；umount卸载时若提示target is busy，说明挂载点仍被进程占用。",
+      "mastery_criteria": [
+        "会使用mount将设备挂载到指定目录",
+        "能区分挂载点目录与普通目录的差异",
+        "会排查并解决target is busy导致的卸载失败"
+      ],
+      "commands": [
+        "mount /dev/sdb1 /media/newdisk",
+        "umount /media/newdisk",
+        "mount -a"
+      ],
+      "question": {
+        "prompt": "执行umount /media/data提示target is busy，最可能的原因是什么？",
+        "choices": [
+          "A. 文件系统已损坏",
+          "B. 磁盘没有分区表",
+          "C. 当前工作目录位于该挂载点内",
+          "D. 内核未加载xfs模块"
+        ],
+        "answer": "C",
+        "explanation": "挂载点被进程占用时无法卸载，典型如Shell当前目录就在挂载点内，离开该目录即可；与分区表、文件系统损坏及内核模块无关。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-06-03",
+      "name": "fdisk磁盘分区",
+      "chapter": 6,
+      "section": "6.3",
+      "domain": "存储管理",
+      "description": "fdisk对MBR磁盘交互式分区，n新建、d删除、p查看、w写入；主分区加扩展分区最多4个，分区后用partprobe让内核重读分区表。",
+      "mastery_criteria": [
+        "会使用fdisk按n、p、w流程创建新分区",
+        "能区分MBR主分区、扩展分区与逻辑分区",
+        "会分区后用mkfs格式化并用blkid查看UUID"
+      ],
+      "commands": [
+        "fdisk /dev/sdb",
+        "partprobe",
+        "mkfs.xfs /dev/sdb1",
+        "blkid /dev/sdb1"
+      ],
+      "question": {
+        "prompt": "在fdisk交互界面中，新建分区与保存退出分别使用哪个子命令？",
+        "choices": [
+          "A. n和w",
+          "B. p和q",
+          "C. d和w",
+          "D. n和t"
+        ],
+        "answer": "A",
+        "explanation": "fdisk中n新建分区，p打印分区表，d删除分区，t修改分区类型，q不保存退出，w写入分区表并退出；新建与保存对应n和w，故选A。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-06-04",
+      "name": "/etc/fstab开机自动挂载",
+      "chapter": 6,
+      "section": "6.4",
+      "domain": "存储管理",
+      "description": "/etc/fstab每行六字段：设备UUID、挂载点、格式、权限选项、是否备份、是否自检，用于开机自动挂载；写错可致无法启动，先mount -a验证。",
+      "mastery_criteria": [
+        "会编写fstab条目实现设备开机自动挂载",
+        "能区分fstab六个字段各自的作用",
+        "会用mount -a验证配置而无需重启"
+      ],
+      "commands": [
+        "blkid /dev/sdb1",
+        "mount -a",
+        "df -h"
+      ],
+      "question": {
+        "prompt": "fstab中推荐用UUID而非/dev/sdb1指定设备，主要原因是什么？",
+        "choices": [
+          "A. UUID更短便于记忆",
+          "B. UUID支持更多文件系统",
+          "C. 设备名无法写入fstab",
+          "D. 设备名可能因插拔顺序改变"
+        ],
+        "answer": "D",
+        "explanation": "设备名会因磁盘插拔或加载顺序变化而漂移，UUID是文件系统的唯一标识、稳定不变，用blkid查询后写入fstab可避免开机错挂载。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-02",
+          "type": "hard"
+        },
+        {
+          "id": "lx-06-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-06-05",
+      "name": "du与df容量统计",
+      "chapter": 6,
+      "section": "6.5",
+      "domain": "存储管理",
+      "description": "df -h看各文件系统整体容量与挂载点，du -sh统计目录实际占用；文件被删但进程占用时df仍计入而du看不到，可用lsof定位。",
+      "mastery_criteria": [
+        "会使用df -h查看各文件系统使用率",
+        "会使用du -sh统计目录占用大小",
+        "能区分df与du统计结果不一致的原因"
+      ],
+      "commands": [
+        "df -h",
+        "du -sh /var/log",
+        "du -h --max-depth=1 /"
+      ],
+      "question": {
+        "prompt": "df -h显示根分区已用95%，du -sh /统计却小很多，最可能的原因是什么？",
+        "choices": [
+          "A. 文件系统类型不支持统计",
+          "B. 有大文件被删除但进程仍持有句柄",
+          "C. du不统计隐藏文件",
+          "D. 根分区挂载点配置错误"
+        ],
+        "answer": "B",
+        "explanation": "文件被rm后若进程仍持有句柄，磁盘空间不会释放，df依旧计入而du已看不到该文件，可用lsof定位进程并重启服务释放空间。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-07-01",
+      "name": "RAID磁盘阵列级别",
+      "chapter": 7,
+      "section": "7.1",
+      "domain": "存储管理",
+      "description": "RAID0条带化提速但无冗余，RAID1镜像容错容量减半，RAID5至少三块盘允许坏一块，RAID10由两组RAID1组成兼顾性能与安全，成本最高。",
+      "mastery_criteria": [
+        "能区分RAID0/1/5/10的冗余与容量特点",
+        "能说出各级别所需最少磁盘数",
+        "会根据磁盘数量与可用性需求选择RAID级别"
+      ],
+      "commands": [
+        "mdadm -D /dev/md0",
+        "cat /proc/mdstat"
+      ],
+      "question": {
+        "prompt": "服务器有4块1TB磁盘，要求允许任意坏一块盘且可用容量约为2TB，应选择哪种RAID级别？",
+        "choices": [
+          "A. RAID0",
+          "B. RAID5",
+          "C. RAID1",
+          "D. RAID10"
+        ],
+        "answer": "D",
+        "explanation": "RAID10由两组RAID1镜像再条带组成，四块1TB盘可用容量为2TB且可容忍任意一块盘损坏；RAID5四块盘容量为3TB，RAID0无冗余，RAID1只需两块盘。"
+      },
+      "prerequisites": []
+    },
+    {
+      "id": "lx-07-02",
+      "name": "mdadm部署软RAID",
+      "chapter": 7,
+      "section": "7.2",
+      "domain": "存储管理",
+      "description": "mdadm是Linux软RAID管理工具，-C创建、-l级别、-n盘数，阵列建成后仍需格式化挂载；-D查看状态，坏盘用-a重新加入热替换。",
+      "mastery_criteria": [
+        "会用mdadm -Cv创建RAID10阵列",
+        "会用mdadm -D与/proc/mdstat查看阵列状态",
+        "会模拟坏盘并用mdadm -a完成热替换"
+      ],
+      "commands": [
+        "mdadm -Cv /dev/md0 -n 4 -l 10 /dev/sdb /dev/sdc /dev/sdd /dev/sde",
+        "mkfs.xfs /dev/md0",
+        "mdadm -D /dev/md0",
+        "mdadm /dev/md0 -a /dev/sdb"
+      ],
+      "question": {
+        "prompt": "使用mdadm创建软RAID时，参数-n 4 -l 10表示什么含义？",
+        "choices": [
+          "A. 4个热备盘、第10号阵列",
+          "B. 4块磁盘、RAID10级别",
+          "C. 4MB条带、10个分片",
+          "D. 第4块盘、级别10"
+        ],
+        "answer": "B",
+        "explanation": "-n指定参与阵列的磁盘数量，-l指定RAID级别，-n 4 -l 10即用4块盘创建RAID10；热备盘由-x指定，与-n含义不同，故选B。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-07-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-07-03",
+      "name": "LVM的PV/VG/LV结构",
+      "chapter": 7,
+      "section": "7.3",
+      "domain": "存储管理",
+      "description": "LVM把物理卷PV汇成卷组VG，再从VG划分逻辑卷LV，实现动态调整容量；PV可由整盘或分区创建，LV才是被格式化挂载的设备。",
+      "mastery_criteria": [
+        "能区分PV、VG、LV三层结构及关系",
+        "会按pvcreate、vgcreate、lvcreate顺序创建LVM",
+        "会用pvs、vgs、lvs查看各层状态"
+      ],
+      "commands": [
+        "pvcreate /dev/sdb /dev/sdc",
+        "vgcreate storage /dev/sdb /dev/sdc",
+        "lvcreate -n vo -l 40 storage",
+        "lvs"
+      ],
+      "question": {
+        "prompt": "在LVM体系中，直接被格式化并挂载使用的设备是哪一个？",
+        "choices": [
+          "A. PV物理卷",
+          "B. VG卷组",
+          "C. LV逻辑卷",
+          "D. PE基本单元"
+        ],
+        "answer": "C",
+        "explanation": "PV是初始化后的物理卷，VG由PV汇总成容量池，LV从VG切出后需格式化并挂载，才是最终可用的设备；PE只是VG的最小分配单元，故选C。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-07-04",
+      "name": "LVM在线扩容lvextend",
+      "chapter": 7,
+      "section": "7.4",
+      "domain": "存储管理",
+      "description": "lvextend -L可在线给LV扩容且不影响数据，但文件系统需同步扩展：XFS用xfs_growfs针对挂载点，ext4用resize2fs针对设备。",
+      "mastery_criteria": [
+        "会用lvextend -L给逻辑卷在线扩容",
+        "会针对XFS与ext4分别执行文件系统扩容命令",
+        "能区分扩容逻辑卷与扩容文件系统两个步骤"
+      ],
+      "commands": [
+        "lvextend -L 300M /dev/storage/vo",
+        "xfs_growfs /storage",
+        "resize2fs /dev/storage/vo",
+        "df -h"
+      ],
+      "question": {
+        "prompt": "XFS文件系统的逻辑卷扩容后，使新容量立即生效应执行哪条命令？",
+        "choices": [
+          "A. resize2fs",
+          "B. xfs_growfs",
+          "C. mkfs.xfs",
+          "D. e2fsck"
+        ],
+        "answer": "B",
+        "explanation": "lvextend只扩大逻辑卷容量，文件系统需单独扩展：XFS用xfs_growfs对挂载点在线扩展，resize2fs用于ext系列，重新格式化会丢失数据。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-07-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-06-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-07-05",
+      "name": "LVM缩容风险与流程",
+      "chapter": 7,
+      "section": "7.5",
+      "domain": "存储管理",
+      "description": "LVM支持缩容但风险高：须先卸载，ext4按e2fsck检查、resize2fs缩文件系统、lvreduce缩逻辑卷的顺序操作；XFS不支持缩容，务必先备份。",
+      "mastery_criteria": [
+        "会按卸载、检查、缩文件系统、缩逻辑卷的顺序缩容ext4",
+        "能说出XFS不支持缩容这一限制",
+        "能区分缩容与扩容在操作顺序上的差异"
+      ],
+      "commands": [
+        "umount /dev/storage/vo",
+        "e2fsck -f /dev/storage/vo",
+        "resize2fs /dev/storage/vo 120M",
+        "lvreduce -L 120M /dev/storage/vo"
+      ],
+      "question": {
+        "prompt": "关于逻辑卷缩容，下列说法正确的是？",
+        "choices": [
+          "A. XFS文件系统可直接在线缩容",
+          "B. 缩容前无需卸载文件系统",
+          "C. 应先缩小文件系统再缩小逻辑卷",
+          "D. 缩容比扩容更安全"
+        ],
+        "answer": "C",
+        "explanation": "缩容必须先卸载，ext4需e2fsck检查后先用resize2fs缩小文件系统，再lvreduce缩小逻辑卷，顺序颠倒会损坏数据；XFS不支持缩容。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-07-04",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-08-01",
+      "name": "iptables四表五链",
+      "chapter": 8,
+      "section": "8.1",
+      "domain": "网络与安全",
+      "description": "iptables按规则匹配数据包，分为filter、nat、mangle、raw四表，数据流经五条链；DROP直接丢包不回应，REJECT拒绝并回应对方。",
+      "mastery_criteria": [
+        "能说出filter、nat、mangle、raw四表的作用",
+        "能按数据流向排出五条链的顺序",
+        "能区分DROP与REJECT的差异"
+      ],
+      "commands": [
+        "iptables -L",
+        "iptables -nL --line-numbers"
+      ],
+      "question": {
+        "prompt": "iptables中使数据包被丢弃且不给对方任何回应的动作是？",
+        "choices": [
+          "A. ACCEPT",
+          "B. REJECT",
+          "C. DROP",
+          "D. LOG"
+        ],
+        "answer": "C",
+        "explanation": "ACCEPT放行数据包，REJECT拒绝并回应对方，DROP直接丢弃且不作任何回应，LOG仅记录日志不改变处理结果；丢包不回应对应DROP，故选C。"
+      },
+      "prerequisites": []
+    },
+    {
+      "id": "lx-08-02",
+      "name": "iptables常用命令",
+      "chapter": 8,
+      "section": "8.2",
+      "domain": "网络与安全",
+      "description": "iptables -P设置链默认策略，-I插入、-A追加、-D删除规则；远程配置防火墙时必须先放行22端口再改默认策略，否则会把自己挡在外面。",
+      "mastery_criteria": [
+        "会添加放行22端口的INPUT规则",
+        "会设置INPUT链默认策略为DROP",
+        "能区分-I、-A、-D的插入位置与删除行为"
+      ],
+      "commands": [
+        "iptables -I INPUT -p tcp --dport 22 -j ACCEPT",
+        "iptables -P INPUT DROP",
+        "iptables -D INPUT 1",
+        "iptables -F"
+      ],
+      "question": {
+        "prompt": "将INPUT链默认策略改为DROP之前，必须先执行的操作是什么？",
+        "choices": [
+          "A. 清空所有规则",
+          "B. 先放行SSH的22端口",
+          "C. 重启网络服务",
+          "D. 修改/etc/hosts"
+        ],
+        "answer": "B",
+        "explanation": "默认策略改为DROP后，未匹配放行规则的连接全部被丢弃，若未先放行SSH的22端口，当前远程会话会被切断，导致无法再登录服务器。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-08-03",
+      "name": "firewalld区域zone",
+      "chapter": 8,
+      "section": "8.3",
+      "domain": "网络与安全",
+      "description": "firewalld用zone组织规则，常见有trusted、public、external、home等，各区域默认放行不同；网卡同一时刻只属于一个区域，按信任级别选择。",
+      "mastery_criteria": [
+        "能说出trusted、public等常用区域的信任级别差异",
+        "会查询与修改网卡所属区域及默认区域",
+        "能区分firewalld与iptables配置生效方式的差异"
+      ],
+      "commands": [
+        "firewall-cmd --get-default-zone",
+        "firewall-cmd --get-active-zones",
+        "firewall-cmd --set-default-zone=public"
+      ],
+      "question": {
+        "prompt": "下列关于firewalld区域zone的说法，正确的是？",
+        "choices": [
+          "A. 一块网卡可同时属于多个区域",
+          "B. 区域只是名字，不含任何规则",
+          "C. 不同区域有不同的默认放行策略",
+          "D. 区域规则重启后必定丢失"
+        ],
+        "answer": "C",
+        "explanation": "每个zone内置不同的默认放行服务集合，如public仅放行ssh等；同一网卡同一时刻只属于一个区域，加--permanent并reload可让规则永久生效。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-08-04",
+      "name": "firewall-cmd常用命令",
+      "chapter": 8,
+      "section": "8.4",
+      "domain": "网络与安全",
+      "description": "firewall-cmd管理firewalld规则，--add-service放行服务、--add-port放行端口；带--permanent写入永久配置，须再执行--reload才立即生效。",
+      "mastery_criteria": [
+        "会查询当前区域放行的服务与端口",
+        "会永久放行8080/tcp端口并重载生效",
+        "能区分运行时配置与永久配置的差异"
+      ],
+      "commands": [
+        "firewall-cmd --list-all",
+        "firewall-cmd --permanent --add-service=http",
+        "firewall-cmd --permanent --add-port=8080/tcp",
+        "firewall-cmd --reload"
+      ],
+      "question": {
+        "prompt": "执行firewall-cmd --permanent --add-port=8080/tcp后端口仍未放行，缺少的步骤是什么？",
+        "choices": [
+          "A. 重启服务器",
+          "B. 执行firewall-cmd --reload",
+          "C. 删除默认区域",
+          "D. 临时关闭SELinux"
+        ],
+        "answer": "B",
+        "explanation": "--permanent只写入永久配置文件，不影响当前运行时规则，必须执行firewall-cmd --reload把永久配置加载到运行时，放行才会立即生效。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-08-05",
+      "name": "firewalld富规则",
+      "chapter": 8,
+      "section": "8.5",
+      "domain": "网络与安全",
+      "description": "富规则支持按来源地址、协议与端口精细控制放行、拒绝及日志，如仅允许某网段访问http；forward-port可实现端口转发重定向流量。",
+      "mastery_criteria": [
+        "会编写按来源网段放行服务的富规则",
+        "会用forward-port实现本机端口转发",
+        "能区分富规则与普通add-port规则的表达能力"
+      ],
+      "commands": [
+        "firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=192.168.10.0/24 service name=http accept'",
+        "firewall-cmd --permanent --add-forward-port=port=8888:proto=tcp:toport=22",
+        "firewall-cmd --list-rich-rules"
+      ],
+      "question": {
+        "prompt": "需求为仅允许192.168.10.0/24网段访问本机http服务，最合适的实现方式是什么？",
+        "choices": [
+          "A. --add-service=http全局放行",
+          "B. 用富规则限定source地址",
+          "C. 修改/etc/services文件",
+          "D. 关闭防火墙并改hosts.allow"
+        ],
+        "answer": "B",
+        "explanation": "富规则可按source address限定来源并指定服务与动作，实现按网段精细放行；--add-service对区域内所有来源生效，粒度过粗不符需求。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-04",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-09-01",
+      "name": "sshd服务配置",
+      "chapter": 9,
+      "section": "9.1",
+      "domain": "网络与安全",
+      "description": "sshd默认监听22端口，主配置为/etc/ssh/sshd_config，可修改Port、PermitRootLogin、PasswordAuthentication等参数，重启sshd后生效。",
+      "mastery_criteria": [
+        "会修改sshd监听端口并重启服务生效",
+        "能区分sshd_config与ssh_config的作用对象",
+        "会修改端口后同步放行防火墙与SELinux策略"
+      ],
+      "commands": [
+        "vim /etc/ssh/sshd_config",
+        "systemctl restart sshd",
+        "ss -tlnp | grep sshd"
+      ],
+      "question": {
+        "prompt": "将sshd端口从22改为8522后远程连接失败，最可能遗漏的操作是什么？",
+        "choices": [
+          "A. 修改客户端/etc/hosts",
+          "B. 防火墙未放行8522端口",
+          "C. 未重启客户端系统",
+          "D. 未修改DNS解析记录"
+        ],
+        "answer": "B",
+        "explanation": "修改sshd端口后除重启服务外，还需防火墙放行新端口，SELinux下还要semanage port调整，否则连接被拦截；与客户端hosts配置无关。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-02-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-09-02",
+      "name": "SSH密钥认证",
+      "chapter": 9,
+      "section": "9.2",
+      "domain": "网络与安全",
+      "description": "ssh-keygen生成密钥对，ssh-copy-id把公钥写入对方~/.ssh/authorized_keys实现免密登录；再关闭PasswordAuthentication可禁用密码登录。",
+      "mastery_criteria": [
+        "会生成密钥对并分发公钥实现免密登录",
+        "能说出authorized_keys的作用与位置",
+        "会关闭密码认证仅保留密钥登录"
+      ],
+      "commands": [
+        "ssh-keygen",
+        "ssh-copy-id root@192.168.10.20",
+        "ssh root@192.168.10.20"
+      ],
+      "question": {
+        "prompt": "ssh-copy-id执行成功后，本机公钥被写入远程主机的哪个文件？",
+        "choices": [
+          "A. /etc/ssh/sshd_config",
+          "B. ~/.ssh/id_rsa",
+          "C. ~/.ssh/authorized_keys",
+          "D. /etc/ssh/known_hosts"
+        ],
+        "answer": "C",
+        "explanation": "ssh-copy-id把本机公钥追加到远程用户的~/.ssh/authorized_keys，登录时sshd用对应私钥校验；id_rsa是本机私钥，known_hosts记录主机指纹。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-09-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-09-03",
+      "name": "scp远程复制",
+      "chapter": 9,
+      "section": "9.3",
+      "domain": "网络与安全",
+      "description": "scp基于SSH在主机间加密复制文件，-r递归复制目录；参数写法为用户@主机:路径，上传与下载只需交换源与目标位置。",
+      "mastery_criteria": [
+        "会用scp上传文件到远程主机",
+        "会用-r递归复制整个目录",
+        "能区分上传与下载时源和目标参数的写法"
+      ],
+      "commands": [
+        "scp /root/a.txt root@192.168.10.20:/tmp/",
+        "scp -r /root/dir root@192.168.10.20:/tmp/",
+        "scp root@192.168.10.20:/etc/passwd /root/"
+      ],
+      "question": {
+        "prompt": "把本地目录/root/data整个复制到192.168.10.20的/tmp下，正确的命令是什么？",
+        "choices": [
+          "A. scp /root/data root@192.168.10.20:/tmp/",
+          "B. scp -r /root/data root@192.168.10.20:/tmp/",
+          "C. scp -r root@192.168.10.20:/tmp/ /root/data",
+          "D. ssh /root/data root@192.168.10.20"
+        ],
+        "answer": "B",
+        "explanation": "scp复制目录必须加-r递归；A缺-r只能传普通文件，C源与目标颠倒变成了下载，D的ssh用于登录不能复制文件，只有B方向与参数都正确。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-09-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-09-04",
+      "name": "screen远程会话",
+      "chapter": 9,
+      "section": "9.4",
+      "domain": "服务与运维",
+      "description": "screen提供可在后台持续运行的会话，SSH断开后任务不中断；-S新建、-ls列出、-r恢复会话，Ctrl+a d临时退出当前会话。",
+      "mastery_criteria": [
+        "会创建命名会话并在其中执行长任务",
+        "会在断线后恢复指定会话",
+        "能区分临时退出会话与彻底关闭会话"
+      ],
+      "commands": [
+        "screen -S backup",
+        "screen -ls",
+        "screen -r backup"
+      ],
+      "question": {
+        "prompt": "SSH断线后想重新接管之前screen会话中运行的任务，应执行哪条命令？",
+        "choices": [
+          "A. screen -S重新新建同名会话",
+          "B. screen -r会话名恢复",
+          "C. 重新登录后会自动恢复",
+          "D. systemctl restart screen服务"
+        ],
+        "answer": "B",
+        "explanation": "screen会话独立于终端存活，断线后任务继续运行；用screen -ls查看会话，再以screen -r会话名重新接管；-S是新建会话，不能恢复旧会话。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-09-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-10-01",
+      "name": "httpd安装与SELinux上下文",
+      "chapter": 10,
+      "section": "10.1",
+      "domain": "数据库与Web",
+      "description": "yum安装并启动httpd后默认发布目录为/var/www/html，端口80；SELinux强制下使用新目录需semanage fcontext配置httpd_sys_content_t标签。",
+      "mastery_criteria": [
+        "会安装、启动httpd并验证80端口监听",
+        "会用semanage fcontext与restorecon调整网页目录上下文",
+        "能区分SELinux三种运行模式的差异"
+      ],
+      "commands": [
+        "yum install -y httpd",
+        "systemctl start httpd",
+        "semanage fcontext -a -t httpd_sys_content_t /www",
+        "restorecon -Rv /www"
+      ],
+      "question": {
+        "prompt": "网站根目录迁移到/www后访问出现403，getenforce显示Enforcing，最应执行的修复是什么？",
+        "choices": [
+          "A. setenforce 0永久关闭SELinux",
+          "B. 为/www设置httpd_sys_content_t上下文并restorecon",
+          "C. 删除/www目录后重建",
+          "D. 修改/etc/hosts文件"
+        ],
+        "answer": "B",
+        "explanation": "强制模式下httpd只能读取带httpd_sys_content_t标签的目录，新目录缺标签导致403；应配置上下文规则并用restorecon生效，而非关闭SELinux。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-10-02",
+      "name": "httpd.conf主配置文件",
+      "chapter": 10,
+      "section": "10.2",
+      "domain": "数据库与Web",
+      "description": "主配置文件为/etc/httpd/conf/httpd.conf，核心参数有Listen、ServerName、DocumentRoot及Directory块授权；httpd -t可检查语法。",
+      "mastery_criteria": [
+        "会修改DocumentRoot并给新目录正确授权",
+        "会修改Listen监听端口并重启生效",
+        "会用httpd -t检查配置语法"
+      ],
+      "commands": [
+        "vim /etc/httpd/conf/httpd.conf",
+        "httpd -t",
+        "systemctl restart httpd"
+      ],
+      "question": {
+        "prompt": "修改DocumentRoot指向新目录后访问被拒绝，除目录系统权限外还需检查什么？",
+        "choices": [
+          "A. ServerAdmin参数",
+          "B. Directory块对新区块的Require授权",
+          "C. UserDir参数",
+          "D. KeepAlive参数"
+        ],
+        "answer": "B",
+        "explanation": "httpd由Directory块控制各目录访问，默认只对/var/www授权；DocumentRoot改到新路径后需在新Directory块中配置Require all granted，否则拒绝访问。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-10-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-10-03",
+      "name": "Apache虚拟主机",
+      "chapter": 10,
+      "section": "10.3",
+      "domain": "数据库与Web",
+      "description": "虚拟主机让一台服务器承载多个网站，可基于IP、端口或域名区分；最常用域名方式，每个VirtualHost段指定ServerName与DocumentRoot。",
+      "mastery_criteria": [
+        "会配置基于域名的VirtualHost",
+        "能为不同站点准备目录与首页文件",
+        "能区分基于IP、端口、域名三种虚拟主机"
+      ],
+      "commands": [
+        "mkdir -p /www/server1",
+        "echo 'server1' > /www/server1/index.html",
+        "vim /etc/httpd/conf.d/vhost.conf",
+        "systemctl restart httpd"
+      ],
+      "question": {
+        "prompt": "一台服务器仅有一个IP，需同时对外提供www.a.com与www.b.com两个站点，应采用什么方案？",
+        "choices": [
+          "A. 部署两台服务器分别运行",
+          "B. 修改SELinux策略放行",
+          "C. 配置基于域名的虚拟主机",
+          "D. 配置基于端口且不配DNS"
+        ],
+        "answer": "C",
+        "explanation": "基于域名的虚拟主机靠请求中的Host头区分站点，同一IP同一80端口即可服务多个网站，只需为每个站点写不同的ServerName与DocumentRoot。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-10-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-10-04",
+      "name": "个人用户主页UserDir",
+      "chapter": 10,
+      "section": "10.4",
+      "domain": "数据库与Web",
+      "description": "UserDir让用户以http://服务器/~用户名发布个人主页，默认目录public_html；需改userdir.conf并满足家目录权限与SELinux布尔值。",
+      "mastery_criteria": [
+        "会启用UserDir并创建public_html目录",
+        "会调整家目录711权限满足访问要求",
+        "会开启httpd_enable_homedirs等SELinux布尔值"
+      ],
+      "commands": [
+        "vim /etc/httpd/conf.d/userdir.conf",
+        "chmod 711 /home/user1",
+        "mkdir -p /home/user1/public_html",
+        "setsebool -P httpd_enable_homedirs on"
+      ],
+      "question": {
+        "prompt": "启用个人用户主页后访问~user1返回403，下列排查项中不合理的是？",
+        "choices": [
+          "A. /home/user1权限是否允许apache进入",
+          "B. public_html是否存在且有首页",
+          "C. 是否开启httpd_enable_homedirs布尔值",
+          "D. 是否为user1配置了sudo权限"
+        ],
+        "answer": "D",
+        "explanation": "个人主页403常见于家目录权限不足、public_html缺失或SELinux布尔值未开启；sudo是提权配置，与Web访问控制无关，故不属于排查项。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-10-02",
+          "type": "hard"
+        },
+        {
+          "id": "lx-10-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-10-05",
+      "name": "mod_ssl部署HTTPS",
+      "chapter": 10,
+      "section": "10.5",
+      "domain": "数据库与Web",
+      "description": "mod_ssl使httpd支持HTTPS并监听443；可自签证书，配置SSLEngine on及证书、私钥文件路径，实现传输加密与身份展示。",
+      "mastery_criteria": [
+        "会安装mod_ssl并确认443端口监听",
+        "会用openssl生成自签证书与私钥",
+        "能区分HTTP与HTTPS的端口及加密差异"
+      ],
+      "commands": [
+        "yum install -y mod_ssl",
+        "openssl req -newkey rsa:2048 -nodes -x509 -days 365 -keyout server.key -out server.crt",
+        "vim /etc/httpd/conf.d/ssl.conf"
+      ],
+      "question": {
+        "prompt": "安装mod_ssl启用HTTPS后，默认使用的监听端口是多少？",
+        "choices": [
+          "A. 80",
+          "B. 443",
+          "C. 22",
+          "D. 8080"
+        ],
+        "answer": "B",
+        "explanation": "HTTP默认80端口，启用mod_ssl后HTTPS默认监听443，证书与私钥由SSLCertificateFile和SSLCertificateKeyFile指定；22是SSH，8080是备用端口。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-10-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-11-01",
+      "name": "FTP主动与被动模式",
+      "chapter": 11,
+      "section": "11.1",
+      "domain": "服务与运维",
+      "description": "FTP控制连接固定用21端口；主动模式由服务器20端口主动连客户端传数据，被动模式由服务器开放随机高位端口等待连接，后者更适应客户端防火墙。",
+      "mastery_criteria": [
+        "能区分主动与被动模式数据连接的发起方",
+        "能说出控制端口21与主动模式数据端口20",
+        "能理解被动模式为何更易穿越客户端防火墙"
+      ],
+      "commands": [
+        "vim /etc/vsftpd/vsftpd.conf",
+        "systemctl restart vsftpd"
+      ],
+      "question": {
+        "prompt": "FTP被动模式与主动模式的关键区别是什么？",
+        "choices": [
+          "A. 控制连接端口分别是21和22",
+          "B. 被动模式由服务器开放随机高位端口供客户端连接",
+          "C. 被动模式无法传输数据",
+          "D. 主动模式不需要控制连接"
+        ],
+        "answer": "B",
+        "explanation": "两种模式控制连接都用21端口；主动模式数据连接由服务器20端口连向客户端，被动模式改为服务器开放随机高位端口等待客户端连接，更易穿越客户端防火墙。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-11-02",
+      "name": "vsftpd三种认证模式",
+      "chapter": 11,
+      "section": "11.2",
+      "domain": "服务与运维",
+      "description": "vsftpd支持匿名开放、本地用户、虚拟用户三种认证：匿名最不安全，本地用户映射系统账号，虚拟用户仅存于FTP内并经PAM认证，最安全。",
+      "mastery_criteria": [
+        "能区分三种认证模式的安全性与配置差异",
+        "会为虚拟用户建立PAM认证与db口令文件",
+        "会配置匿名上传所需权限与SELinux布尔值"
+      ],
+      "commands": [
+        "db_load -T -t hash -f vuser.txt vuser.db",
+        "vim /etc/pam.d/vsftpd.vu",
+        "vim /etc/vsftpd/vsftpd.conf"
+      ],
+      "question": {
+        "prompt": "vsftpd三种用户认证模式中，与系统账号完全隔离且安全性最高的是？",
+        "choices": [
+          "A. 匿名开放模式",
+          "B. 本地用户模式",
+          "C. 虚拟用户模式",
+          "D. root直接登录模式"
+        ],
+        "answer": "C",
+        "explanation": "虚拟用户仅存在于FTP内，经PAM与db文件认证并映射到低权限系统账号，泄露也不危及系统；匿名模式最不安全，本地用户可登录系统，风险更高。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-11-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-11-03",
+      "name": "vsftpd.conf主配置",
+      "chapter": 11,
+      "section": "11.3",
+      "domain": "服务与运维",
+      "description": "主配置为/etc/vsftpd/vsftpd.conf，常用参数有anonymous_enable、local_enable、write_enable、local_umask等，改后重启vsftpd生效。",
+      "mastery_criteria": [
+        "会配置本地用户登录并设置local_umask 022",
+        "会开启chroot限制用户不能跳出家目录",
+        "能区分参数生效所需的重启与防火墙放行操作"
+      ],
+      "commands": [
+        "vim /etc/vsftpd/vsftpd.conf",
+        "systemctl restart vsftpd",
+        "chmod -R 755 /var/ftp"
+      ],
+      "question": {
+        "prompt": "要求本地用户上传文件的默认权限为644，vsftpd.conf中local_umask应设为多少？",
+        "choices": [
+          "A. 022",
+          "B. 077",
+          "C. 002",
+          "D. 755"
+        ],
+        "answer": "A",
+        "explanation": "上传文件权限为666减去umask，666-022=644；umask 077得到600，002得到664，755是目录常用权限而非umask取值，故local_umask应设022。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-11-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-11-04",
+      "name": "ftp客户端命令",
+      "chapter": 11,
+      "section": "11.4",
+      "domain": "服务与运维",
+      "description": "ftp客户端登录后，get下载、put上传、lcd切换本地目录、bye退出；ls与cd作用于服务器端目录，与本地命令需区分开。",
+      "mastery_criteria": [
+        "会连接FTP服务器并完成上传下载",
+        "会用lcd指定本地保存目录",
+        "能区分远程命令与本地命令的执行位置"
+      ],
+      "commands": [
+        "ftp 192.168.10.10",
+        "get welcome.txt",
+        "put upload.txt",
+        "bye"
+      ],
+      "question": {
+        "prompt": "在ftp交互模式中，想把文件保存到本地/backup目录，应先执行哪条命令？",
+        "choices": [
+          "A. cd /backup",
+          "B. lcd /backup",
+          "C. ls /backup",
+          "D. mkdir /backup"
+        ],
+        "answer": "B",
+        "explanation": "cd与ls作用于FTP服务器端目录，lcd切换的是客户端本地目录；先lcd /backup再get或mget，文件即下载到本地该目录，故选B。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-11-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-12-01",
+      "name": "Samba共享配置smb.conf",
+      "chapter": 12,
+      "section": "12.1",
+      "domain": "服务与运维",
+      "description": "Samba实现Linux与Windows间文件共享，主配置为/etc/samba/smb.conf，共享段定义path、browseable、writable等，服务为smb与nmb。",
+      "mastery_criteria": [
+        "会编写共享段配置并创建共享目录",
+        "会重启smb与nmb服务并放行防火墙",
+        "会用testparm检查配置语法"
+      ],
+      "commands": [
+        "vim /etc/samba/smb.conf",
+        "testparm",
+        "systemctl restart smb nmb"
+      ],
+      "question": {
+        "prompt": "修改/etc/samba/smb.conf后，重启服务前快速检查配置语法应使用哪条命令？",
+        "choices": [
+          "A. testparm",
+          "B. httpd -t",
+          "C. nginx -t",
+          "D. named-checkconf"
+        ],
+        "answer": "A",
+        "explanation": "testparm专门解析smb.conf，输出生效参数并报告语法错误；httpd -t、nginx -t与named-checkconf分别属于Web与DNS服务，与Samba无关。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-12-02",
+      "name": "Samba用户密码管理",
+      "chapter": 12,
+      "section": "12.2",
+      "domain": "服务与运维",
+      "description": "Samba密码独立于系统密码，须先有同名系统用户，再用pdbedit -a -u添加Samba账号；smbclient -U用户 //主机/共享可验证访问。",
+      "mastery_criteria": [
+        "会用pdbedit添加、查看与删除Samba用户",
+        "能区分系统密码与Samba密码的存储差异",
+        "会用smbclient验证共享是否可访问"
+      ],
+      "commands": [
+        "pdbedit -a -u linuxuser",
+        "pdbedit -L",
+        "smbclient -U linuxuser //192.168.10.10/database"
+      ],
+      "question": {
+        "prompt": "系统已存在用户linuxuser，为其添加Samba访问密码的正确命令是什么？",
+        "choices": [
+          "A. passwd linuxuser",
+          "B. pdbedit -a -u linuxuser",
+          "C. useradd linuxuser",
+          "D. groupadd linuxuser"
+        ],
+        "answer": "B",
+        "explanation": "passwd改的是系统登录密码，Samba密码独立存于其密码库，须用pdbedit -a -u添加；useradd用于创建系统用户，该用户已存在，无需重建。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-12-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-12-03",
+      "name": "NFS服务端与exports",
+      "chapter": 12,
+      "section": "12.3",
+      "domain": "服务与运维",
+      "description": "NFS服务端在/etc/exports写目录与客户端参数共享目录，参数如rw、sync、root_squash；依赖rpcbind做端口映射，数据端口2049。",
+      "mastery_criteria": [
+        "会编写/etc/exports共享条目并exportfs发布",
+        "会启动rpcbind与nfs-server服务",
+        "能区分rw与ro、root_squash与no_root_squash"
+      ],
+      "commands": [
+        "vim /etc/exports",
+        "exportfs -arv",
+        "systemctl restart rpcbind nfs-server"
+      ],
+      "question": {
+        "prompt": "/etc/exports中条目/nfsfile 192.168.10.0/24(rw,sync,root_squash)里，root_squash的作用是什么？",
+        "choices": [
+          "A. 禁止客户端挂载共享",
+          "B. 将客户端root映射为匿名低权限用户",
+          "C. 该目录变为只读共享",
+          "D. 启用传输加密"
+        ],
+        "answer": "B",
+        "explanation": "root_squash把客户端root身份映射为nfsnobody等匿名用户，防止远端root滥用本地root权限；rw是读写、sync是同步写入，均不改变身份映射。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-12-04",
+      "name": "showmount与NFS客户端挂载",
+      "chapter": 12,
+      "section": "12.4",
+      "domain": "服务与运维",
+      "description": "showmount -e服务器地址可查询NFS共享列表，客户端用mount -t nfs 服务器:目录 挂载点挂载使用，df -h验证结果。",
+      "mastery_criteria": [
+        "会用showmount -e查询服务端共享列表",
+        "会用mount -t nfs挂载远程共享目录",
+        "会通过df -h验证挂载结果"
+      ],
+      "commands": [
+        "showmount -e 192.168.10.10",
+        "mount -t nfs 192.168.10.10:/nfsfile /mnt/nfs",
+        "df -h"
+      ],
+      "question": {
+        "prompt": "客户端执行showmount -e 192.168.10.10报RPC程序未注册，最应检查服务端的什么？",
+        "choices": [
+          "A. 服务端rpcbind与nfs-server是否启动",
+          "B. 客户端SELinux是否关闭",
+          "C. 客户端DNS配置是否正确",
+          "D. 客户端内核版本是否过低"
+        ],
+        "answer": "A",
+        "explanation": "showmount依赖RPC服务查询共享信息，服务端rpcbind或nfs-server未启动时即报此错；应先启动两服务，再exportfs -arv重新发布共享。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-12-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-12-05",
+      "name": "autofs自动挂载",
+      "chapter": 12,
+      "section": "12.5",
+      "domain": "服务与运维",
+      "description": "autofs按需自动挂载：auto.master声明挂载父目录与映射文件，映射文件写子目录、参数与设备；空闲超时自动卸载，避免fstab依赖网络。",
+      "mastery_criteria": [
+        "会编写auto.master与映射文件实现按需挂载",
+        "会启动autofs并验证访问子目录时自动挂载",
+        "能区分autofs按需挂载与fstab开机挂载的差异"
+      ],
+      "commands": [
+        "vim /etc/auto.master",
+        "vim /etc/auto.nfs",
+        "systemctl restart autofs"
+      ],
+      "question": {
+        "prompt": "autofs映射文件/etc/auto.nfs中一行data -fstype=nfs 192.168.10.10:/nfsfile表示什么？",
+        "choices": [
+          "A. 开机强制挂载到/data目录",
+          "B. 进入父目录下的data子目录时自动挂载该共享",
+          "C. 卸载/nfsfile共享",
+          "D. 创建名为data的系统用户"
+        ],
+        "answer": "B",
+        "explanation": "auto.master把父目录与映射文件关联，访问父目录下data子目录时autofs自动挂载对应共享，空闲超时自动卸载，避免fstab在网络未就绪时卡住启动。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-12-04",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-13-01",
+      "name": "DNS解析体系与端口",
+      "chapter": 13,
+      "section": "13.1",
+      "domain": "网络与安全",
+      "description": "DNS按根、顶级域、二级域分层管理并逐级委托到权威服务器，使用53端口；正向解析域名查IP，反向解析IP查域名，查询分递归与迭代。",
+      "mastery_criteria": [
+        "能按顺序说出DNS域名层次与解析流程",
+        "能区分递归查询与迭代查询",
+        "能区分正向解析与反向解析使用的记录类型"
+      ],
+      "commands": [
+        "dig www.example.com",
+        "nslookup www.example.com",
+        "dig -x 192.168.10.10"
+      ],
+      "question": {
+        "prompt": "DNS正向解析与反向解析分别完成什么转换？",
+        "choices": [
+          "A. 域名到IP与IP到域名",
+          "B. IP到MAC与MAC到IP",
+          "C. 域名到MAC与MAC到域名",
+          "D. 端口到进程与进程到端口"
+        ],
+        "answer": "A",
+        "explanation": "正向解析把域名解析为IP，使用A等记录；反向解析把IP映射回域名，使用PTR记录并依赖in-addr.arpa区域；域名到MAC是ARP的职责。"
+      },
+      "prerequisites": []
+    },
+    {
+      "id": "lx-13-02",
+      "name": "DNS主从服务器",
+      "chapter": 13,
+      "section": "13.2",
+      "domain": "网络与安全",
+      "description": "主服务器维护区域数据，从服务器经区域传送同步副本提供冗余；主方用allow-transfer限定传送对象，从方type slave并指定masters。",
+      "mastery_criteria": [
+        "会配置type slave区域并指定masters地址",
+        "会在主服务器用allow-transfer限制传送对象",
+        "能区分主从服务器角色与数据来源"
+      ],
+      "commands": [
+        "vim /etc/named.rfc1912.zones",
+        "systemctl restart named",
+        "ls /var/named/slaves"
+      ],
+      "question": {
+        "prompt": "从服务器区域配置中type slave、masters { 192.168.10.10; }的含义是什么？",
+        "choices": [
+          "A. 本机为主服务器，向192.168.10.10推送数据",
+          "B. 本机为从服务器，从192.168.10.10拉取区域数据",
+          "C. 192.168.10.10是DNS转发器地址",
+          "D. 192.168.10.10是允许查询的客户端"
+        ],
+        "answer": "B",
+        "explanation": "type slave声明从服务器角色，masters指定区域数据同步来源，named通过区域传送把数据存入slaves目录；主推送、转发器与allow-query均不符。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-13-03",
+      "name": "named.conf与区域声明",
+      "chapter": 13,
+      "section": "13.3",
+      "domain": "网络与安全",
+      "description": "/etc/named.conf定义监听与allow-query等全局项，区域常声明在/etc/named.rfc1912.zones；named-checkconf可启动前校验语法。",
+      "mastery_criteria": [
+        "会修改named.conf的监听地址与允许查询范围",
+        "会注册新区域并指定区域文件名",
+        "会用named-checkconf与named-checkzone校验配置"
+      ],
+      "commands": [
+        "vim /etc/named.conf",
+        "vim /etc/named.rfc1912.zones",
+        "named-checkconf",
+        "named-checkzone example.com /var/named/example.com.zone"
+      ],
+      "question": {
+        "prompt": "BIND配置改完后服务启动失败，应优先使用哪条命令定位named.conf的语法错误？",
+        "choices": [
+          "A. named-checkconf",
+          "B. dig @localhost",
+          "C. systemctl status network",
+          "D. ping 127.0.0.1"
+        ],
+        "answer": "A",
+        "explanation": "named-checkconf检查named.conf及其include文件的语法并指出错误行，named-checkzone校验区域文件；dig须等服务正常后用于验证解析。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-13-04",
+      "name": "正向与反向解析记录",
+      "chapter": 13,
+      "section": "13.4",
+      "domain": "网络与安全",
+      "description": "区域文件以$TTL与SOA开头，NS声明权威服务器，A记录域名到IPv4，PTR反向解析，CNAME别名，MX邮件交换；改后更新SOA序列号并重载。",
+      "mastery_criteria": [
+        "会编写A、CNAME、PTR等资源记录",
+        "能区分正向区域与反向区域文件的结构",
+        "会修改SOA序列号并重载named触发从服务器同步"
+      ],
+      "commands": [
+        "vim /var/named/example.com.zone",
+        "systemctl restart named",
+        "dig @127.0.0.1 www.example.com"
+      ],
+      "question": {
+        "prompt": "反向区域10.168.192.in-addr.arpa的文件中，把192.168.10.10指向www.example.com的记录应写为？",
+        "choices": [
+          "A. www IN A 10",
+          "B. 10 IN PTR www.example.com.",
+          "C. IN MX 10 www.example.com",
+          "D. 10 IN A www.example.com."
+        ],
+        "answer": "B",
+        "explanation": "反向区域中主机位单独成行：10 IN PTR www.example.com.，10是192.168.10.10的最后一段，PTR指向以点结尾的完整域名；A记录用于正向解析。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-13-05",
+      "name": "BIND chroot监牢模式",
+      "chapter": 13,
+      "section": "13.5",
+      "domain": "网络与安全",
+      "description": "bind-chroot把named限制在/var/named/chroot虚拟根内，即使服务被攻破也难访问系统其他目录，属于最小权限加固手段。",
+      "mastery_criteria": [
+        "会安装bind-chroot并确认配置迁移到chroot环境",
+        "能说出chroot隔离带来的安全价值",
+        "能区分chroot前后的配置文件路径差异"
+      ],
+      "commands": [
+        "yum install -y bind bind-chroot",
+        "systemctl restart named",
+        "ls /var/named/chroot/etc"
+      ],
+      "question": {
+        "prompt": "为BIND部署chroot监牢环境的主要目的是什么？",
+        "choices": [
+          "A. 加快DNS解析速度",
+          "B. 限制named进程可访问的文件系统范围",
+          "C. 减少内存占用",
+          "D. 替代主从同步机制"
+        ],
+        "answer": "B",
+        "explanation": "chroot把named的根切换到/var/named/chroot，进程无法越界访问系统其他目录，即使被攻破也难横向渗透；与性能、内存及主从同步无关。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-14-01",
+      "name": "DHCP租约流程与端口67/68",
+      "chapter": 14,
+      "section": "14.1",
+      "domain": "网络与安全",
+      "description": "DHCP用discover、offer、request、ack四步为客户端自动分配IP与网络参数，服务端监听UDP 67端口，客户端使用UDP 68端口，避免手工配置出错和地址冲突。",
+      "mastery_criteria": [
+        "能按顺序说出discover、offer、request、ack四步交互",
+        "能记住服务端UDP 67、客户端UDP 68端口",
+        "能解释租期过半时客户端单播request续约的机制"
+      ],
+      "commands": [
+        "ss -ulnp | grep :67",
+        "systemctl status dhcpd"
+      ],
+      "question": {
+        "prompt": "DHCP客户端与服务器完成一次地址分配时，四次报文交互的正确顺序是？",
+        "choices": [
+          "A. discover、request、offer、ack",
+          "B. offer、discover、ack、request",
+          "C. discover、offer、request、ack",
+          "D. request、discover、offer、ack"
+        ],
+        "answer": "C",
+        "explanation": "客户端先广播discover寻找服务器，服务器回offer提供地址，客户端广播request确认选择，服务器最后ack确认租约生效，即DORA四步流程。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-14-02",
+      "name": "dhcpd.conf主配置文件",
+      "chapter": 14,
+      "section": "14.2",
+      "domain": "服务与运维",
+      "description": "/etc/dhcp/dhcpd.conf定义子网声明、地址范围与租期等参数，配置错误会导致服务无法启动，修改后可用dhcpd -t检测语法，再重启服务使其生效。",
+      "mastery_criteria": [
+        "能写出subnet、netmask、range、option routers的基本结构",
+        "会用dhcpd -t检测配置语法",
+        "能区分全局参数与子网声明的作用范围"
+      ],
+      "commands": [
+        "vim /etc/dhcp/dhcpd.conf",
+        "dhcpd -t",
+        "systemctl restart dhcpd"
+      ],
+      "question": {
+        "prompt": "修改/etc/dhcp/dhcpd.conf后，重启dhcpd前用于检查配置语法的命令是？",
+        "choices": [
+          "A. dhcpd -t",
+          "B. dhcpd --check",
+          "C. systemctl test dhcpd",
+          "D. dhclient -t"
+        ],
+        "answer": "A",
+        "explanation": "dhcpd -t只解析配置文件语法并报告错误，不会真正启动服务，是修改配置后避免服务启动失败的常用检查手段。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-14-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-14-03",
+      "name": "地址池与保留主机配置",
+      "chapter": 14,
+      "section": "14.3",
+      "domain": "服务与运维",
+      "description": "在subnet声明中用range划定自动分配的地址池，用host声明绑定客户端MAC与固定IP实现保留主机，保证打印机、服务器等设备每次获得同一地址。",
+      "mastery_criteria": [
+        "能配置range指定可分配的地址范围",
+        "会为指定MAC地址的主机绑定固定IP",
+        "能说明host声明需放在对应subnet内的原因"
+      ],
+      "commands": [
+        "range 192.168.10.50 192.168.10.100;",
+        "host web { hardware ethernet 00:0c:29:aa:bb:cc; fixed-address 192.168.10.88; }",
+        "systemctl restart dhcpd"
+      ],
+      "question": {
+        "prompt": "要让某台服务器每次都获得同一个IP地址，最可靠的做法是？",
+        "choices": [
+          "A. 缩短地址租期",
+          "B. 在dhcpd.conf中按MAC用host声明绑定fixed-address",
+          "C. 增大地址池范围",
+          "D. 关闭其他客户端的DHCP"
+        ],
+        "answer": "B",
+        "explanation": "host声明将客户端MAC与fixed-address绑定，属于保留地址，不受地址池动态分配影响；缩短租期或扩池均不能保证该设备拿到固定IP。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-14-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-14-04",
+      "name": "租约文件dhcpd.leases与租期管理",
+      "chapter": 14,
+      "section": "14.4",
+      "domain": "服务与运维",
+      "description": "/var/lib/dhcpd/dhcpd.leases记录已分配地址、客户端标识与租期起止时间，是服务器重启后恢复租约的依据；default-lease-time与max-lease-time控制租期长短。",
+      "mastery_criteria": [
+        "能说出dhcpd.leases文件的作用与存放路径",
+        "会通过default-lease-time设置默认租期",
+        "能解释租约到期未续约后地址被回收的机制"
+      ],
+      "commands": [
+        "cat /var/lib/dhcpd/dhcpd.leases",
+        "default-lease-time 21600;",
+        "max-lease-time 43200;"
+      ],
+      "question": {
+        "prompt": "DHCP服务器用于记录已分配地址与租期信息的文件是？",
+        "choices": [
+          "A. /etc/dhcp/dhcpd.conf",
+          "B. /var/lib/dhcpd/dhcpd.leases",
+          "C. /etc/dhcp/dhcpd.leases",
+          "D. /var/log/dhcpd.log"
+        ],
+        "answer": "B",
+        "explanation": "dhcpd.leases位于/var/lib/dhcpd/目录，记录每笔租约明细，服务器重启后据此恢复租约状态；dhcpd.conf只是配置文件，不记录分配结果。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-14-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-14-05",
+      "name": "DHCP服务部署与防火墙放行",
+      "chapter": 14,
+      "section": "14.5",
+      "domain": "服务与运维",
+      "description": "部署dhcpd需安装软件包、编写配置并设置开机自启，同时在firewalld中放行dhcp服务；未放行UDP 67端口或与网关自带DHCP冲突时，客户端将无法获取地址。",
+      "mastery_criteria": [
+        "能完成dhcpd安装、配置与开机自启",
+        "会用firewall-cmd放行dhcp服务",
+        "能排查客户端无法获取地址的常见原因"
+      ],
+      "commands": [
+        "yum install -y dhcp",
+        "firewall-cmd --permanent --add-service=dhcp",
+        "firewall-cmd --reload",
+        "systemctl enable --now dhcpd"
+      ],
+      "question": {
+        "prompt": "客户端与dhcpd服务器同网段但始终获取不到地址，最应优先检查的是？",
+        "choices": [
+          "A. 客户端主机名是否规范",
+          "B. SELinux是否处于启用状态",
+          "C. 是否配置了DNS服务器",
+          "D. firewalld是否放行dhcp服务"
+        ],
+        "answer": "D",
+        "explanation": "dhcpd依赖UDP 67端口，firewalld未放行dhcp服务时客户端的discover广播无法到达服务器；主机名、SELinux状态与DNS配置均不影响地址分配。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-14-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-08-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-15-01",
+      "name": "邮件系统角色与SMTP端口",
+      "chapter": 15,
+      "section": "15.1",
+      "domain": "服务与运维",
+      "description": "邮件系统由MUA用户代理、MTA传输代理、MDA投递代理组成，MTA之间通过SMTP协议25端口传递邮件，用户用MUA编写收取邮件，各角色分工明确。",
+      "mastery_criteria": [
+        "能区分MUA、MTA、MDA三类角色的职责",
+        "能记住SMTP协议使用TCP 25端口",
+        "能描述一封邮件从发件人到收件人的完整路径"
+      ],
+      "commands": [
+        "postfix status",
+        "telnet mail.example.com 25"
+      ],
+      "question": {
+        "prompt": "在邮件系统中负责服务器之间邮件传输、监听25端口的是？",
+        "choices": [
+          "A. MUA",
+          "B. MDA",
+          "C. MTA",
+          "D. MRA"
+        ],
+        "answer": "C",
+        "explanation": "MTA即邮件传输代理，如Postfix，通过SMTP协议在服务器间转发邮件并监听TCP 25端口；MUA是用户收发界面，MDA负责把邮件投递到本地邮箱。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-13-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-15-02",
+      "name": "postfix安装与main.cf核心参数",
+      "chapter": 15,
+      "section": "15.2",
+      "domain": "服务与运维",
+      "description": "/etc/postfix/main.cf是postfix主配置文件，myhostname、mydomain、myorigin、inet_interfaces、mydestination决定主机身份与收信域名，修改后需重启服务。",
+      "mastery_criteria": [
+        "能设置myhostname与mydomain等基本参数",
+        "会将inet_interfaces改为all以接收外部邮件",
+        "能通过mydestination指定本机负责接收的邮件域名"
+      ],
+      "commands": [
+        "yum install -y postfix",
+        "vim /etc/postfix/main.cf",
+        "postconf -e 'inet_interfaces = all'",
+        "systemctl enable --now postfix"
+      ],
+      "question": {
+        "prompt": "postfix主配置文件中用于指定邮件服务器自身主机名的参数是？",
+        "choices": [
+          "A. mydestination",
+          "B. myhostname",
+          "C. myorigin",
+          "D. inet_interfaces"
+        ],
+        "answer": "B",
+        "explanation": "myhostname定义服务器自身主机名，myorigin指定发信来源域名，inet_interfaces控制监听的网卡地址，mydestination声明本机可接收的邮件域名。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-15-01",
+          "type": "hard"
+        },
+        {
+          "id": "lx-05-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-15-03",
+      "name": "Dovecot提供POP3与IMAP服务",
+      "chapter": 15,
+      "section": "15.3",
+      "domain": "服务与运维",
+      "description": "Dovecot负责用户邮件收取，POP3使用110端口、IMAP使用143端口，启用TLS加密后分别为995与993；IMAP支持服务器端目录同步，适合多终端使用场景。",
+      "mastery_criteria": [
+        "能记住POP3 110、IMAP 143及加密端口995/993",
+        "能区分POP3下载模式与IMAP在线同步模式",
+        "会配置protocols启用dovecot相关协议"
+      ],
+      "commands": [
+        "yum install -y dovecot",
+        "vim /etc/dovecot/dovecot.conf",
+        "protocols = imap pop3 lmtp",
+        "systemctl enable --now dovecot"
+      ],
+      "question": {
+        "prompt": "IMAP协议默认使用的TCP端口号是？",
+        "choices": [
+          "A. 25",
+          "B. 110",
+          "C. 143",
+          "D. 995"
+        ],
+        "answer": "C",
+        "explanation": "IMAP默认使用TCP 143端口，启用SSL/TLS加密后为993；POP3默认110、加密后995；25是SMTP发信端口。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-15-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-15-04",
+      "name": "发信测试与邮件收发验证",
+      "chapter": 15,
+      "section": "15.4",
+      "domain": "服务与运维",
+      "description": "配置完成后用mail命令向本机用户发信验证MTA正常，用telnet连接25端口可手工执行SMTP对话排查故障，收件人用mail读取信件确认投递成功。",
+      "mastery_criteria": [
+        "会用mail命令发送测试邮件",
+        "会用telnet连接25端口验证SMTP响应",
+        "能通过/var/log/maillog定位邮件投递问题"
+      ],
+      "commands": [
+        "echo 'body' | mail -s 'test' root@example.com",
+        "telnet 127.0.0.1 25",
+        "tail -f /var/log/maillog"
+      ],
+      "question": {
+        "prompt": "想验证本机postfix的SMTP服务是否正常响应，应执行？",
+        "choices": [
+          "A. telnet 127.0.0.1 25",
+          "B. telnet 127.0.0.1 110",
+          "C. ssh 127.0.0.1",
+          "D. ping 127.0.0.1"
+        ],
+        "answer": "A",
+        "explanation": "telnet连接25端口后若出现220开头的SMTP欢迎信息即服务正常，还可手工输入HELO、MAIL FROM等命令模拟发信，是排查邮件服务最直接的手段。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-15-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-15-05",
+      "name": "邮件服务防火墙放行与收发联调",
+      "chapter": 15,
+      "section": "15.5",
+      "domain": "服务与运维",
+      "description": "对外提供邮件服务需在firewalld放行smtp、pop3、imap等服务，否则外部客户端无法连接；放行后用MUA或命令行完成跨主机收发联调，验证全链路可用。",
+      "mastery_criteria": [
+        "会用firewall-cmd放行smtp与pop3等服务",
+        "能完成跨主机的发信与收信联调",
+        "能根据maillog判断投递失败的原因"
+      ],
+      "commands": [
+        "firewall-cmd --permanent --add-service=smtp",
+        "firewall-cmd --permanent --add-service=pop3",
+        "firewall-cmd --reload"
+      ],
+      "question": {
+        "prompt": "外网用户无法用POP3收取邮件，但SMTP发信一直正常，最可能的原因是？",
+        "choices": [
+          "A. postfix服务未启动",
+          "B. firewalld未放行pop3服务",
+          "C. 服务器主机名未配置",
+          "D. 缺少DNS服务器"
+        ],
+        "answer": "B",
+        "explanation": "收信走POP3的110端口，firewalld未放行pop3时外部无法连上Dovecot；postfix只负责发信传输，因此发信正常并不能说明收信链路已放通。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-15-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-08-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-16-01",
+      "name": "Squid代理服务概念与端口3128",
+      "chapter": 16,
+      "section": "16.1",
+      "domain": "网络与安全",
+      "description": "Squid是缓存代理服务器，正向代理替内网用户访问外网并缓存网页，透明代理无需客户端配置即可拦截流量，默认监听TCP 3128端口。",
+      "mastery_criteria": [
+        "能说出正向代理与透明代理的区别",
+        "能记住Squid默认监听3128端口",
+        "能描述代理缓存减少重复出网请求的原理"
+      ],
+      "commands": [
+        "yum install -y squid",
+        "systemctl enable --now squid"
+      ],
+      "question": {
+        "prompt": "Squid服务默认监听的TCP端口号是？",
+        "choices": [
+          "A. 8080",
+          "B. 3128",
+          "C. 3260",
+          "D. 80"
+        ],
+        "answer": "B",
+        "explanation": "Squid默认使用3128端口，可在squid.conf的http_port中修改；8080是常见备用代理端口，3260是iSCSI端口，80是Web服务端口。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-08-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-16-02",
+      "name": "squid.conf主配置与http_port",
+      "chapter": 16,
+      "section": "16.2",
+      "domain": "服务与运维",
+      "description": "/etc/squid/squid.conf定义监听端口、缓存目录与访问规则，http_port指定端口，cache_dir设置磁盘缓存容量，修改后先用squid -k parse检查再重载生效。",
+      "mastery_criteria": [
+        "会通过http_port设置监听端口与透明模式",
+        "能配置cache_dir指定缓存目录与容量",
+        "会用squid -k parse与squid -k reconfigure管理服务"
+      ],
+      "commands": [
+        "vim /etc/squid/squid.conf",
+        "http_port 3128",
+        "squid -k parse",
+        "squid -k reconfigure"
+      ],
+      "question": {
+        "prompt": "修改squid.conf后，让运行中的Squid重读配置且不中断服务的命令是？",
+        "choices": [
+          "A. squid -z",
+          "B. systemctl restart squid",
+          "C. squid -k parse",
+          "D. squid -k reconfigure"
+        ],
+        "answer": "D",
+        "explanation": "squid -k reconfigure让运行中的Squid重新加载配置文件，不中断已有连接；squid -z用于初始化缓存目录，parse仅检查语法并不加载配置。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-16-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-16-03",
+      "name": "ACL访问控制与http_access规则",
+      "chapter": 16,
+      "section": "16.3",
+      "domain": "网络与安全",
+      "description": "用acl定义源地址、目标域名或时间段等条件，再通过http_access allow与deny决定放行，规则自上而下匹配、先命中先生效，可实现精细的上网行为管控。",
+      "mastery_criteria": [
+        "能用acl src定义允许上网的网段",
+        "会按先allow后deny的顺序编写http_access规则",
+        "能解释规则自上而下匹配与末尾deny all兜底的策略"
+      ],
+      "commands": [
+        "acl localnet src 192.168.10.0/24",
+        "http_access allow localnet",
+        "http_access deny all"
+      ],
+      "question": {
+        "prompt": "关于Squid的http_access规则匹配顺序，正确的说法是？",
+        "choices": [
+          "A. deny规则始终优先于allow",
+          "B. 只看配置文件中最后一条规则",
+          "C. 自上而下匹配，先命中的先生效",
+          "D. 按随机顺序匹配"
+        ],
+        "answer": "C",
+        "explanation": "Squid自上而下逐条匹配http_access，命中即执行允许或拒绝并停止匹配，末尾的deny all做兜底，因此allow规则必须写在deny all之前才能生效。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-16-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-16-04",
+      "name": "透明代理与反向代理加速",
+      "chapter": 16,
+      "section": "16.4",
+      "domain": "服务与运维",
+      "description": "透明代理用防火墙把内网80端口流量重定向到3128，客户端无感知；反向代理对外代替后端Web服务器响应并缓存静态内容，起到加速与保护后端的作用。",
+      "mastery_criteria": [
+        "能配置http_port 3128 transparent启用透明模式",
+        "会用防火墙规则把80端口流量重定向到Squid",
+        "能区分反向代理与正向代理的部署位置和用途"
+      ],
+      "commands": [
+        "http_port 3128 transparent",
+        "firewall-cmd --permanent --add-forward-port=port=80:proto=tcp:toport=3128",
+        "firewall-cmd --reload"
+      ],
+      "question": {
+        "prompt": "Squid作为反向代理为网站加速时，其部署位置与角色是？",
+        "choices": [
+          "A. 安装在客户端浏览器内",
+          "B. 部署在网站前端，代替后端Web服务器对外响应",
+          "C. 仅部署在内网交换机上",
+          "D. 部署在DNS服务器中"
+        ],
+        "answer": "B",
+        "explanation": "反向代理位于网站前端，以Web服务身份对外接受请求，静态内容命中缓存后直接返回，未命中再转给后端真实服务器，从而分担负载并隐藏后端。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-16-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-10-03",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-17-01",
+      "name": "iSCSI target与initiator概念及端口3260",
+      "chapter": 17,
+      "section": "17.1",
+      "domain": "存储管理",
+      "description": "iSCSI把块设备封装成SCSI指令经IP网络传输，提供服务的一方称target服务端，使用的一方称initiator客户端，默认监听TCP 3260端口，实现网络化块存储。",
+      "mastery_criteria": [
+        "能区分target服务端与initiator客户端",
+        "能记住iSCSI使用TCP 3260端口",
+        "能说出iSCSI块共享与NFS文件共享的本质区别"
+      ],
+      "commands": [
+        "yum install -y targetcli",
+        "yum install -y iscsi-initiator-utils",
+        "firewall-cmd --permanent --add-port=3260/tcp",
+        "firewall-cmd --reload"
+      ],
+      "question": {
+        "prompt": "iSCSI的initiator客户端发起连接时使用的默认端口号是？",
+        "choices": [
+          "A. 3306",
+          "B. 3128",
+          "C. 3260",
+          "D. 2049"
+        ],
+        "answer": "C",
+        "explanation": "iSCSI服务端监听TCP 3260端口，initiator通过该端口发现并登录target；3306是MariaDB端口，3128是Squid端口，2049是NFS端口。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-06-03",
+          "type": "soft"
+        },
+        {
+          "id": "lx-07-03",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-17-02",
+      "name": "targetcli配置backstore与LUN",
+      "chapter": 17,
+      "section": "17.2",
+      "domain": "存储管理",
+      "description": "用targetcli进入交互界面，先创建block后端存储，再创建target与TPG，添加ACL并生成LUN共享给客户端，配置通过saveconfig保存到/etc/target/saveconfig.json。",
+      "mastery_criteria": [
+        "会用targetcli创建block后端存储",
+        "能创建target并为其生成LUN",
+        "会配置ACL限制允许登录的initiator"
+      ],
+      "commands": [
+        "targetcli",
+        "backstores/block create disk0 /dev/sdb1",
+        "iscsi/ create iqn.2026-11.com.example:server",
+        "saveconfig"
+      ],
+      "question": {
+        "prompt": "在targetcli中基于/dev/sdb1分区创建块后端存储，应使用的命令是？",
+        "choices": [
+          "A. backstores/block create disk0 /dev/sdb1",
+          "B. iscsi/ create disk0",
+          "C. luns/ create /dev/sdb1",
+          "D. acls/ create disk0"
+        ],
+        "answer": "A",
+        "explanation": "先在backstores/block下用create命令创建块后端，再由target引用它生成LUN；iscsi/ create用于创建target，acls/ create用于添加访问控制，职责各不相同。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-17-01",
+          "type": "hard"
+        },
+        {
+          "id": "lx-07-03",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-17-03",
+      "name": "initiator发现与登录iscsiadm",
+      "chapter": 17,
+      "section": "17.3",
+      "domain": "存储管理",
+      "description": "客户端用iscsiadm通过SendTargets模式向服务端3260端口发现可用target，再执行login登录，成功后本地多出一块磁盘，用lsblk确认新设备名后再分区使用。",
+      "mastery_criteria": [
+        "会执行iscsiadm的discovery发现target",
+        "会登录target并按需登出断开",
+        "能通过lsblk识别新增的iSCSI磁盘设备"
+      ],
+      "commands": [
+        "iscsiadm -m discovery -t st -p 192.168.10.10",
+        "iscsiadm -m node -T iqn.2026-11.com.example:server -p 192.168.10.10 --login",
+        "iscsiadm -m node -T iqn.2026-11.com.example:server -u",
+        "lsblk"
+      ],
+      "question": {
+        "prompt": "使用iscsiadm查询指定服务器上可用的iSCSI target，正确的命令是？",
+        "choices": [
+          "A. iscsiadm -m node --login",
+          "B. iscsiadm -m session",
+          "C. iscsiadm -m iface",
+          "D. iscsiadm -m discovery -t st -p 192.168.10.10"
+        ],
+        "answer": "D",
+        "explanation": "discovery模式配合-t st（SendTargets）向服务端发起发现查询并返回可用target名称；--login是登录动作，session用于查看已建立的会话，均不是发现命令。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-17-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-17-04",
+      "name": "initiatorname.iscsi与iSCSI设备持久化",
+      "chapter": 17,
+      "section": "17.4",
+      "domain": "存储管理",
+      "description": "/etc/iscsi/initiatorname.iscsi定义客户端唯一IQN名称，必须与服务端ACL一致才能登录；登录到的磁盘分区格式化后写入fstab，配_netdev参数保证网络就绪后再挂载。",
+      "mastery_criteria": [
+        "能修改initiatorname.iscsi中的IQN名称",
+        "会在fstab中用_netdev参数挂载iSCSI磁盘",
+        "能排查ACL与IQN不匹配导致的登录失败"
+      ],
+      "commands": [
+        "vim /etc/iscsi/initiatorname.iscsi",
+        "systemctl enable --now iscsid",
+        "echo '/dev/sdb1 /iscsi ext4 defaults,_netdev 0 0' >> /etc/fstab",
+        "mount -a"
+      ],
+      "question": {
+        "prompt": "在fstab中挂载iSCSI磁盘时加入_netdev挂载选项的目的是？",
+        "choices": [
+          "A. 加快磁盘挂载速度",
+          "B. 等网络就绪后再挂载该设备",
+          "C. 启用磁盘加密功能",
+          "D. 开机时自动格式化磁盘"
+        ],
+        "answer": "B",
+        "explanation": "_netdev声明该设备依赖网络，系统会在网络服务启动完成后再挂载，避免开机阶段网络未就绪导致挂载失败甚至阻塞启动流程。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-17-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-06-04",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-18-01",
+      "name": "MariaDB安装与安全初始化",
+      "chapter": 18,
+      "section": "18.1",
+      "domain": "数据库与Web",
+      "description": "安装mariadb-server并启动后必须运行mysql_secure_installation，设置root密码、删除匿名用户、禁止root远程登录并删除test库，服务默认监听3306端口。",
+      "mastery_criteria": [
+        "能安装并启动mariadb服务",
+        "会完成mysql_secure_installation的各项设置",
+        "能记住MariaDB默认监听3306端口"
+      ],
+      "commands": [
+        "yum install -y mariadb mariadb-server",
+        "systemctl enable --now mariadb",
+        "mysql_secure_installation",
+        "firewall-cmd --permanent --add-service=mysql"
+      ],
+      "question": {
+        "prompt": "MariaDB安装完成后，用于设置root密码、删除匿名用户等安全加固项的交互式工具是？",
+        "choices": [
+          "A. mysqladmin",
+          "B. mysql_secure_installation",
+          "C. mysqldump",
+          "D. mysql_upgrade"
+        ],
+        "answer": "B",
+        "explanation": "mysql_secure_installation是交互式安全脚本，一次性完成root密码、匿名用户、test库与远程root登录限制等加固；mysqladmin用于日常管理，mysqldump用于备份。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-05-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-18-02",
+      "name": "库与表的增删改查操作",
+      "chapter": 18,
+      "section": "18.2",
+      "domain": "数据库与Web",
+      "description": "登录mysql命令行后用CREATE DATABASE与CREATE TABLE建库建表，DESC查看表结构，INSERT写入数据，SELECT查询，UPDATE与DELETE修改删除，是日常运维基本功。",
+      "mastery_criteria": [
+        "会创建数据库与数据表并指定字段类型",
+        "能用INSERT与SELECT完成数据写入和查询",
+        "能安全地使用UPDATE与DELETE修改或删除数据"
+      ],
+      "commands": [
+        "mysql -u root -p",
+        "CREATE DATABASE linux DEFAULT CHARACTER SET utf8;",
+        "CREATE TABLE users (id INT, name VARCHAR(30));",
+        "DESC users;",
+        "SELECT * FROM users;"
+      ],
+      "question": {
+        "prompt": "查看数据表users中字段结构的SQL语句是？",
+        "choices": [
+          "A. SHOW DATABASES;",
+          "B. SELECT * FROM users;",
+          "C. DESC users;",
+          "D. USE users;"
+        ],
+        "answer": "C",
+        "explanation": "DESC users显示字段名、类型、是否为空与键信息；SHOW DATABASES列出所有库，SELECT *查询数据行，USE用于切换当前数据库，作用各不相同。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-18-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-18-03",
+      "name": "用户授权GRANT与权限回收",
+      "chapter": 18,
+      "section": "18.3",
+      "domain": "数据库与Web",
+      "description": "GRANT按用户与主机粒度授权，如GRANT ALL ON db.* TO user@'%' IDENTIFIED BY '密码'，用SHOW GRANTS查看、REVOKE回收，应遵循最小权限原则。",
+      "mastery_criteria": [
+        "会用GRANT创建用户并授权指定数据库",
+        "能区分user@'localhost'与user@'%'的差别",
+        "会用SHOW GRANTS查看权限并用REVOKE回收"
+      ],
+      "commands": [
+        "GRANT SELECT,INSERT ON linux.* TO 'reader'@'%' IDENTIFIED BY 'P@ssw0rd';",
+        "SHOW GRANTS FOR 'reader'@'%';",
+        "REVOKE INSERT ON linux.* FROM 'reader'@'%';",
+        "FLUSH PRIVILEGES;"
+      ],
+      "question": {
+        "prompt": "授权用户user1从任意主机访问linux数据库，授权语句中主机部分应写为？",
+        "choices": [
+          "A. user1@'localhost'",
+          "B. user1@'127.0.0.1'",
+          "C. user1@'%'",
+          "D. user1@'*'"
+        ],
+        "answer": "C",
+        "explanation": "%代表任意主机，localhost仅限本机连接，127.0.0.1也只覆盖本机回环，MariaDB中不存在用*通配主机名的写法；Web应用跨主机连库时常用'%'。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-18-02",
+          "type": "hard"
+        },
+        {
+          "id": "lx-03-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-18-04",
+      "name": "mysqldump备份与恢复",
+      "chapter": 18,
+      "section": "18.4",
+      "domain": "数据库与Web",
+      "description": "mysqldump把指定库导出为SQL文本并配合重定向保存，恢复时用mysql命令导入；恢复前需先建好同名数据库，重要操作前应先确认备份文件完整可用。",
+      "mastery_criteria": [
+        "会用mysqldump导出单个或全部数据库",
+        "会将SQL备份文件导入完成数据恢复",
+        "能说出备份与恢复的完整命令组合"
+      ],
+      "commands": [
+        "mysqldump -u root -p linux > /backup/linux.sql",
+        "mysqldump -u root -p --all-databases > /backup/all.sql",
+        "mysql -u root -p linux < /backup/linux.sql"
+      ],
+      "question": {
+        "prompt": "将linux数据库备份到linux.sql文件，正确的命令是？",
+        "choices": [
+          "A. mysqldump -u root -p linux > linux.sql",
+          "B. mysqldump -u root -p linux < linux.sql",
+          "C. mysql -u root -p linux > linux.sql",
+          "D. cp linux.sql mysqldump"
+        ],
+        "answer": "A",
+        "explanation": "mysqldump是逻辑备份工具，用输出重定向>把导出的SQL保存为文件；输入重定向<是恢复导入的方向；mysql客户端和cp命令都无法完成逻辑备份。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-18-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-18-05",
+      "name": "phpMyAdmin图形化管理与远程访问",
+      "chapter": 18,
+      "section": "18.5",
+      "domain": "数据库与Web",
+      "description": "phpMyAdmin是基于PHP的Web图形化管理工具，部署到站点目录后用浏览器即可管理MariaDB；远程客户端直连数据库时需放行3306端口并完成对应用户授权。",
+      "mastery_criteria": [
+        "会部署phpMyAdmin并用浏览器登录管理数据库",
+        "会放行3306端口供远程客户端连接",
+        "能说明Web工具与命令行管理数据库的异同"
+      ],
+      "commands": [
+        "yum install -y phpmyadmin",
+        "firewall-cmd --permanent --add-service=mysql",
+        "firewall-cmd --reload",
+        "vim /etc/httpd/conf.d/phpMyAdmin.conf"
+      ],
+      "question": {
+        "prompt": "允许远程图形客户端直连MariaDB，除了完成用户授权外还需要？",
+        "choices": [
+          "A. 重启phpMyAdmin",
+          "B. 删除test数据库",
+          "C. 修改服务器主机名",
+          "D. 放行TCP 3306端口"
+        ],
+        "answer": "D",
+        "explanation": "远程连接走TCP 3306端口，firewalld未放行mysql服务时连接会被直接拒绝；phpMyAdmin是通过本机Web访问的方式，与远程客户端直连3306是两条不同链路。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-18-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-10-03",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-19-01",
+      "name": "PXE网络引导原理",
+      "chapter": 19,
+      "section": "19.1",
+      "domain": "自动化部署",
+      "description": "PXE客户端网卡启动时通过DHCP获取IP并得到next-server与引导文件名，再从TFTP下载pxelinux.0等引导程序加载内核，实现无光盘无U盘的网络安装。",
+      "mastery_criteria": [
+        "能说出DHCP与TFTP在PXE流程中的分工",
+        "能解释next-server与filename参数的作用",
+        "能描述客户端从通电到加载安装程序的完整过程"
+      ],
+      "commands": [
+        "next-server 192.168.10.10;",
+        "filename \"pxelinux.0\";",
+        "systemctl restart dhcpd"
+      ],
+      "question": {
+        "prompt": "PXE客户端通过DHCP获得地址后，后续引导文件从哪台服务器下载？",
+        "choices": [
+          "A. next-server指定的TFTP服务器",
+          "B. 网关地址对应的服务器",
+          "C. DNS服务器",
+          "D. 通过广播随机获取"
+        ],
+        "answer": "A",
+        "explanation": "DHCP应答中的next-server指向TFTP服务器地址，filename指定引导文件名，客户端据此用TFTP协议下载pxelinux.0开始引导；网关与DNS不承担引导文件下载职责。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-14-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-19-02",
+      "name": "TFTP服务与syslinux引导文件部署",
+      "chapter": 19,
+      "section": "19.2",
+      "domain": "自动化部署",
+      "description": "TFTP根目录为/var/lib/tftpboot，需放入pxelinux.0、内核vmlinuz与初始化镜像initrd.img，并创建pxelinux.cfg/default菜单指定安装入口与内核参数。",
+      "mastery_criteria": [
+        "会启用tftp-server并确认服务监听",
+        "能复制pxelinux.0与内核文件到tftpboot目录",
+        "会编写pxelinux.cfg/default引导菜单"
+      ],
+      "commands": [
+        "yum install -y tftp-server syslinux",
+        "cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/",
+        "vim /var/lib/tftpboot/pxelinux.cfg/default",
+        "firewall-cmd --permanent --add-service=tftp"
+      ],
+      "question": {
+        "prompt": "PXE引导菜单文件pxelinux.cfg/default所在的服务器目录是？",
+        "choices": [
+          "A. /var/ftp",
+          "B. /var/lib/tftpboot",
+          "C. /etc/tftp",
+          "D. /srv/www"
+        ],
+        "answer": "B",
+        "explanation": "TFTP根目录为/var/lib/tftpboot，default菜单与pxelinux.0、vmlinuz、initrd.img都必须放在该目录下，客户端才能按相对路径成功下载引导文件。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-19-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-19-03",
+      "name": "Kickstart应答文件ks.cfg",
+      "chapter": 19,
+      "section": "19.3",
+      "domain": "自动化部署",
+      "description": "ks.cfg按root密码、语言时区、磁盘分区与软件包等顺序预答安装中的全部问题，可用system-config-kickstart生成或改写root下anaconda-ks.cfg，并用ksvalidator校验。",
+      "mastery_criteria": [
+        "能说出ks.cfg应答的主要安装环节",
+        "会用system-config-kickstart或anaconda-ks.cfg模板生成应答文件",
+        "会用ksvalidator检查应答文件语法"
+      ],
+      "commands": [
+        "yum install -y system-config-kickstart",
+        "ksvalidator /root/ks.cfg",
+        "rootpw --iscrypted $6$xxxxxxxx",
+        "clearpart --all --initlabel"
+      ],
+      "question": {
+        "prompt": "校验kickstart应答文件语法是否正确的工具是？",
+        "choices": [
+          "A. anaconda --check",
+          "B. kickstart -t",
+          "C. ksvalidator",
+          "D. system-config-kickstart"
+        ],
+        "answer": "C",
+        "explanation": "ksvalidator专门校验ks.cfg的语法与指令顺序，能在装机前发现拼写和参数错误；system-config-kickstart用于生成文件，anaconda是安装程序本身而非校验工具。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-19-01",
+          "type": "hard"
+        },
+        {
+          "id": "lx-01-01",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-19-04",
+      "name": "安装源服务与无人值守安装流程",
+      "chapter": 19,
+      "section": "19.4",
+      "domain": "自动化部署",
+      "description": "用vsftpd或httpd把光盘镜像发布为网络安装源，引导菜单中用inst.ks指定应答文件地址，客户端开机即自动完成分区、装包与配置，实现批量无人值守装机。",
+      "mastery_criteria": [
+        "会用vsftpd或httpd发布系统镜像安装源",
+        "能在引导菜单中指定inst.ks参数",
+        "能完整描述无人值守装机的端到端流程"
+      ],
+      "commands": [
+        "mount /dev/cdrom /var/ftp/pub",
+        "systemctl enable --now vsftpd",
+        "append initrd=initrd.img inst.ks=ftp://192.168.10.10/pub/ks.cfg",
+        "firewall-cmd --permanent --add-service=ftp"
+      ],
+      "question": {
+        "prompt": "在PXE引导菜单中指定kickstart应答文件位置的内核参数是？",
+        "choices": [
+          "A. ksdir",
+          "B. repo=only",
+          "C. inst.repo=ks",
+          "D. inst.ks"
+        ],
+        "answer": "D",
+        "explanation": "引导参数inst.ks=URL告知安装程序从该地址读取ks.cfg，再配合安装源提供软件包；两者共同构成无人值守安装的完整输入，其余选项均不是有效参数。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-19-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-11-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-20-01",
+      "name": "LNMP架构与Nginx特点",
+      "chapter": 20,
+      "section": "20.1",
+      "domain": "数据库与Web",
+      "description": "LNMP由Linux、Nginx、MariaDB、PHP组成，Nginx以事件驱动的异步非阻塞模型支撑高并发，静态页面自己响应，动态请求转交php-fpm，默认监听80端口。",
+      "mastery_criteria": [
+        "能说出LNMP四个组件的角色分工",
+        "能解释Nginx高并发的异步非阻塞原理",
+        "能记住Nginx默认使用80端口"
+      ],
+      "commands": [
+        "yum install -y nginx mariadb-server php-fpm",
+        "systemctl enable --now nginx php-fpm mariadb"
+      ],
+      "question": {
+        "prompt": "与每请求独占进程的模型相比，Nginx能支撑高并发的关键原因是？",
+        "choices": [
+          "A. 监听的端口更少",
+          "B. 事件驱动的异步非阻塞IO模型",
+          "C. 不处理任何动态请求",
+          "D. 只能提供静态页面"
+        ],
+        "answer": "B",
+        "explanation": "Nginx采用事件驱动与异步非阻塞IO，单个worker进程可同时处理数千连接，资源占用远低于每请求一个进程的模型，这是其高并发能力的根本来源。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-10-02",
+          "type": "soft"
+        }
+      ]
+    },
+    {
+      "id": "lx-20-02",
+      "name": "nginx.conf主配置与虚拟主机",
+      "chapter": 20,
+      "section": "20.2",
+      "domain": "数据库与Web",
+      "description": "/etc/nginx/nginx.conf为主配置文件，http段内用server块定义虚拟主机，listen指定端口、server_name匹配域名、root指定站点目录，改后用nginx -t检测再重载。",
+      "mastery_criteria": [
+        "能读懂nginx.conf的全局、events与http三层结构",
+        "会编写基于域名的虚拟主机server块",
+        "会用nginx -t检测配置并平滑重载服务"
+      ],
+      "commands": [
+        "vim /etc/nginx/nginx.conf",
+        "nginx -t",
+        "nginx -s reload",
+        "server { listen 80; server_name www.example.com; root /www/web; }"
+      ],
+      "question": {
+        "prompt": "修改nginx.conf后，检查配置文件语法是否正确的命令是？",
+        "choices": [
+          "A. nginx -s stop",
+          "B. nginx -v",
+          "C. nginx -t",
+          "D. systemctl check nginx"
+        ],
+        "answer": "C",
+        "explanation": "nginx -t测试配置文件语法与路径有效性，通过后再用nginx -s reload平滑重载；-s stop是停止服务，-v仅显示版本号，均不能检测配置。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-20-01",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-20-03",
+      "name": "Nginx与php-fpm的FastCGI对接",
+      "chapter": 20,
+      "section": "20.3",
+      "domain": "数据库与Web",
+      "description": "Nginx自身不解析PHP，需在location中通过FastCGI协议把.php请求交给php-fpm处理，fastcgi_pass指向127.0.0.1:9000并传递SCRIPT_FILENAME等参数。",
+      "mastery_criteria": [
+        "会配置location匹配.php结尾的请求",
+        "能设置fastcgi_pass与fastcgi_param参数",
+        "能排查php页面被下载或返回502的常见问题"
+      ],
+      "commands": [
+        "location ~ \\.php$ { fastcgi_pass 127.0.0.1:9000; include fastcgi.conf; }",
+        "systemctl enable --now php-fpm",
+        "ss -tnlp | grep 9000"
+      ],
+      "question": {
+        "prompt": "Nginx把PHP动态请求交给php-fpm处理时，使用的关键指令是？",
+        "choices": [
+          "A. fastcgi_pass",
+          "B. proxy_pass",
+          "C. root",
+          "D. upstream"
+        ],
+        "answer": "A",
+        "explanation": "fastcgi_pass通过FastCGI协议把请求转发给php-fpm监听的9000端口；proxy_pass用于HTTP反向代理转发，root只定义站点根目录，upstream用于定义后端服务器组。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-20-02",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-20-04",
+      "name": "动静分离与location匹配",
+      "chapter": 20,
+      "section": "20.4",
+      "domain": "数据库与Web",
+      "description": "动静分离让Nginx直接响应jpg、css等静态请求，仅把动态脚本转发给php-fpm；location按精确、正则与前缀的优先级匹配URI，可显著降低后端压力。",
+      "mastery_criteria": [
+        "会为静态资源与动态请求分别配置location",
+        "能说明location精确、正则与前缀匹配的优先级",
+        "能解释动静分离提升整体性能的原因"
+      ],
+      "commands": [
+        "location ~* \\.(jpg|png|css|js)$ { root /www/static; }",
+        "location ~ \\.php$ { fastcgi_pass 127.0.0.1:9000; }"
+      ],
+      "question": {
+        "prompt": "关于Nginx location的匹配优先级，正确的说法是？",
+        "choices": [
+          "A. 普通前缀匹配永远优先于正则匹配",
+          "B. 精确匹配=最高，其次正则，再普通前缀",
+          "C. 按配置文件中字母顺序匹配",
+          "D. 匹配顺序完全随机"
+        ],
+        "answer": "B",
+        "explanation": "精确匹配=优先级最高，命中即返回；正则匹配按出现顺序先命中先生效；最后才做普通前缀匹配并取最长结果，理解该顺序才能正确实现动静分离。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-20-03",
+          "type": "hard"
+        }
+      ]
+    },
+    {
+      "id": "lx-20-05",
+      "name": "MariaDB后端与Discuz论坛部署",
+      "chapter": 20,
+      "section": "20.5",
+      "domain": "数据库与Web",
+      "description": "部署Discuz需先建库并授权用户，将论坛程序解压到站点目录并赋权，再经浏览器安装向导填入数据库地址账号完成初始化，体现LNMP三组件协作的完整流程。",
+      "mastery_criteria": [
+        "会为论坛创建数据库并授权访问用户",
+        "能完成Discuz程序部署与站点目录赋权",
+        "能按安装向导完成论坛初始化并验证访问"
+      ],
+      "commands": [
+        "mysql -u root -p -e \"CREATE DATABASE discuz; GRANT ALL ON discuz.* TO 'discuz'@'localhost' IDENTIFIED BY 'P@ss';\"",
+        "unzip Discuz_X3.5.zip -d /www/web/",
+        "chown -R nginx:nginx /www/web/",
+        "systemctl reload nginx"
+      ],
+      "question": {
+        "prompt": "单机LNMP部署Discuz时，数据库授权语句中用户主机部分写localhost的含义是？",
+        "choices": [
+          "A. 允许任意远程主机连接数据库",
+          "B. 仅允许Web服务器本机连接数据库",
+          "C. 仅允许root用户连接数据库",
+          "D. 禁止一切连接"
+        ],
+        "answer": "B",
+        "explanation": "Nginx与php-fpm、MariaDB同机部署时，PHP通过本机回环连接数据库，授权localhost即可满足需求且更安全；只有数据库与应用分离部署时才需放开远程主机。"
+      },
+      "prerequisites": [
+        {
+          "id": "lx-20-03",
+          "type": "hard"
+        },
+        {
+          "id": "lx-18-03",
+          "type": "hard"
+        }
+      ]
+    }
+  ]
+}

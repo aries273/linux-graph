@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux 就该这么学 · 知识图谱</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%230f6e62%22%2F%3E%3Cpath%20d%3D%22M9%2011h14M9%2016h9M9%2021h12%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="./">
+    <span class="logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="currentColor"/><path d="M9 11h14M9 16h9M9 21h12" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+    </span>
+    <span class="brand-copy">
+      <span class="brand-name">Linux 就该这么学</span>
+      <span class="brand-kicker">知识图谱 · 20 章</span>
+    </span>
+  </a>
+  <nav class="site-nav" aria-label="主导航">
+    <a class="nav-link active" href="./" aria-current="page">知识图谱</a>
+    <a class="nav-link" href="https://www.linuxprobe.com/" target="_blank" rel="noopener noreferrer">原书网站</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <div class="side-tools">
+      <input id="q" type="search" placeholder="搜索知识点、命令或章节" autocomplete="off" aria-label="搜索知识点">
+      <div class="filter-row">
+        <select id="fChapter" aria-label="章节"><option value="">全部章节</option></select>
+        <select id="fDomain" aria-label="领域"><option value="">全部领域</option></select>
+      </div>
+      <div id="count" class="count">正在加载…</div>
+    </div>
+    <div id="list" class="list"><p class="muted" style="padding:12px">正在加载知识点…</p></div>
+  </aside>
+
+  <section class="graph-pane" aria-label="先修关系图">
+    <div class="graph-toolbar">
+      <div class="depth" id="depth-switch" role="group" aria-label="向上先修层数">
+        <span class="depth-label">向上</span>
+        <div class="seg">
+          <button type="button" data-depth="1" aria-pressed="false">1 层</button>
+          <button type="button" data-depth="2" class="on" aria-pressed="true">2 层</button>
+          <button type="button" data-depth="3" aria-pressed="false">3 层</button>
+          <button type="button" data-depth="all" aria-pressed="false">全部</button>
+        </div>
+      </div>
+      <div class="zoom-tools" role="group" aria-label="缩放">
+        <button type="button" id="btn-zoom-out" title="缩小">－</button>
+        <button type="button" id="btn-zoom-in" title="放大">＋</button>
+        <button type="button" id="btn-fit" title="适配画面">适配</button>
+      </div>
+    </div>
+    <p id="graph-meta" class="graph-meta"></p>
+    <div id="graph-stage" class="graph-stage">
+      <div id="cy" hidden role="img" aria-label="选中知识点的先修关系图"></div>
+      <div id="graph-empty" class="graph-empty">
+        <p>选一个知识点后，这里只画它附近的先修，以及下一层会用到它的知识点。</p>
+        <p class="muted">点节点可以换选中项，滚轮缩放、拖动平移。名称过长会省略，悬停可看全名。</p>
+        <button type="button" id="pick-sample" class="btn btn-primary">先看看「管道符与重定向」</button>
+      </div>
+      <div id="node-tip" class="node-tip" role="tooltip" hidden></div>
+    </div>
+    <ul class="legend" id="legend">
+      <li><i class="swatch sw-base"></i>基础篇（1–5 章）</li>
+      <li><i class="swatch sw-svc"></i>服务篇（6–13 章）</li>
+      <li><i class="swatch sw-arch"></i>架构篇（14–20 章）</li>
+      <li><i class="swatch sw-cur"></i>当前</li>
+      <li><i class="swatch line-hard"></i>硬先修（实线）</li>
+      <li><i class="swatch line-soft"></i>软先修（虚线）</li>
+    </ul>
+  </section>
+
+  <aside id="detail" class="detail"><p class="muted">正在加载…</p></aside>
+</div>
+
+<footer class="site-footer">
+  <p>数据来源：《Linux 就该这么学》刘遄著 · <span id="stats">共 0 个知识点</span></p>
+</footer>
+
+<script src="assets/vendor/cytoscape.min.js"></script>
+<script src="assets/vendor/dagre.min.js"></script>
+<script src="assets/vendor/cytoscape-dagre.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
